@@ -1,203 +1,433 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+:root {
+    --primary: #00c897;        
+    --secondary: #005f73;      
+    --accent: #0a9396;          
+    --bg-dark: #001219;         
+    --white: #ffffff;
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --error: #ef4444;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    --text-light: #e5e7eb;
+    --text-muted: #9ca3af;
+}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: "Poppins", sans-serif;
 }
 
 body {
+    min-height: 100vh;
+    background: radial-gradient(circle at top left, var(--secondary), var(--bg-dark));
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background: linear-gradient(90deg, #259970, #124d3b);
-    background-image: url('/images/green-landscape.jpg');
-    background-size: cover;
-    background-position: center;
-}
-
-.container {
-    position: relative;
-    width: 850px;
-    height: 550px;
-    background-color: #dcdcdc;
-    border-radius: 30px;
-    box-shadow: 0 0 28px rgba(65, 65, 65, 0.52);
+    color: var(--text-light);
     overflow: hidden;
 }
 
-.form-box {
+/* Animated background orbs for warmth */
+body::before,
+body::after {
+    content: "";
     position: absolute;
-    right: 0;
-    width: 60%;
-    height: 100%;
-    background: #2C3E36;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    text-align: center;
-    padding: 40px;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.35;
+    z-index: 0;
+}
+body::before {
+    top: -100px;
+    left: -100px;
+    background: var(--accent);
+}
+body::after {
+    bottom: -100px;
+    right: -100px;
+    background: var(--primary);
+}
+
+/* Glass Container */
+.container {
+    position: relative;
+    width: 400px;
+    background: var(--glass-bg);
+    border-radius: 25px;
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+    padding: 45px 35px;
     z-index: 1;
-    transition: 0.6s ease-in-out 1s, visibility 0s 1s;
+    animation: fadeIn 0.7s ease-in-out;
+    transition: transform 0.3s ease;
 }
 
-.container.active .form-box {
-    right: 40%;
+.container:hover {
+    transform: translateY(-3px);
 }
 
-.form-box.login {
-    visibility: hidden;
-}
-.container.active .form-box.login{
-    visibility: visible;
+/* Header */
+.form-box h1 {
+    text-align: center;
+    color: var(--white);
+    margin-bottom: 25px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(0, 200, 151, 0.3);
 }
 
-form {
-    width: 100%;
-}
-
-.container h1 {
-    font-size: 36px;
+/* Input Fields */
+.input-box {
+    position: relative;
     margin-bottom: 20px;
 }
 
-.input-box {
-    position: relative;
-    margin: 25px 0;
+.input-box label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 5px;
 }
 
 .input-box input {
     width: 100%;
-    padding: 13px 50px 13px 20px;
-    background: #D9D9D9;
-    border-radius: 8px;
+    padding: 12px 40px 12px 15px;
     border: none;
-    outline: none;
-    font-size: 16px;
-    color: #333;
-    font-weight: 500;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 0.95rem;
+    color: var(--white);
+    box-shadow: 0 0 0 1px transparent;
+    transition: all 0.3s ease;
 }
 
 .input-box input::placeholder {
-    color: #888;
-    font-weight: 400;
+    color: var(--text-muted);
 }
 
+.input-box input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Input Icons */
 .input-box i {
     position: absolute;
-    right: 20px;
-    top: 65%;
-    transform: translateY(-50%);
-    font-size: 20px;
-    color: #666;
+    right: 15px;
+    top: 38px;
+    color: var(--text-muted);
+    font-size: 1.2rem;
 }
 
-.forgot-pass {
-    margin: -10px 0 20px;
+/* Error Message */
+.has-error input {
+    border: 1px solid var(--error);
+}
+
+.error-text {
+    color: var(--error);
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: block;
 }
 
 .forgot-pass a {
-    font-size: 16px;
-    color: #dcdcdc;
+    color: var(--accent);
     text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
 }
 
 .forgot-pass a:hover {
-    text-decoration: underline;
+    color: var(--primary);
 }
 
+/* Buttons */
 .btn {
-    width: 50%;
-    height: 48px;
-    background: #4CAF88;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border: none;
-    cursor: pointer;
-    color: #fff;
-    font-size: 16px;
+    width: 100%;
+    padding: 12px 0;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: var(--white);
     font-weight: 600;
-    transition: 0.3s;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 200, 151, 0.3);
 }
 
 .btn:hover {
-    background: #3a8f73;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 200, 151, 0.5);
 }
 
-.toggle-box {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+/* Footer Links */
+p {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 15px;
 }
 
-.toggle-box::before {
-    content: '';
-    position: absolute;
-    left: -260%;
-    width: 300%;
-    height: 100%;
-    background: #D9D9D9;
-    border-radius: 20px;
-    transition: 0.8s ease-in-out;
+p a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
 }
 
-.container.active .toggle-box::before {
-    left: 40%;
+p a:hover {
+    color: var(--accent);
 }
 
-.toggle-panel {
-    position: absolute;
-    width: 40%;
-    height: 100%;
-    background: #D9D9D9;
-    display: flex;
-    flex-direction: column;
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 450px) {
+    .container {
+        width: 90%;
+        padding: 35px 25px;
+    }
+    .form-box h1 {
+        font-size: 1.6rem;
+    }
+}
+.back-home-btn {
+    display: flex;               /* center content horizontally */
     justify-content: center;
     align-items: center;
-    z-index: 2;
-    transition: .8s ease-in-out;
-}
-
-.toggle-panel.toggle-left {
-    left: 0;
-    transition-delay: 0.3s ;
-}
-
-.container.active .toggle-panel.toggle-left {
-    left: 60%;
-    transition-delay: 0.6s;
-}
-
-.toggle-panel.toggle-right {
-    right: -40%;
-    transition-delay: 0.3s;
-}
-
-.container.active .toggle-panel.toggle-right {
-    right: 0;
-    transition-delay: 0.6s;
-}
-
-.toggle-panel p {
-    text-align: center;
-    margin: 20px 0;
-    color: #333;
-}
-
-.toggle-panel .btn {
-    width: 160px;
-    height: 46px;
-    background: transparent;
-    border: 2px solid #C9B17C;
-    color: #2C3E36;
+    gap: 8px;
+    width: 100%;                 /* match form input width */
+    max-width: 100%;             
+    padding: 13px 0;             /* same height style as inputs */
+    margin-top: 20px;            /* spacing from submit button */
+    background: rgba(255, 255, 255, 0.1); /* glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: #d4f0e6;              /* soft light text */
     font-weight: 600;
-    transition: 0.3s;
+    font-size: 1rem;
+    text-decoration: none;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
 }
 
-.toggle-panel .btn:hover {
-    background: #C9B17C;
+.back-home-btn i {
+    font-size: 1.2rem;
+    color: #48b389;              /* green accent */
+    transition: color 0.3s ease;
+}
+
+.back-home-btn:hover {
+    background: rgba(72, 179, 137, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 200, 151, 0.4);
     color: #fff;
 }
+
+.back-home-btn:hover i {
+    color: #fff;
+}
+/* Background wrapper fills container */
+.background-animations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0; /* behind the form */
+}
+
+/* Large gradient blobs */
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.6;
+    animation: floatBlob 25s ease-in-out infinite;
+}
+
+.blob1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle at center, rgba(72, 179, 137, 0.4), transparent 70%);
+    top: -100px;
+    left: -100px;
+}
+
+.blob2 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle at center, rgba(18, 77, 59, 0.35), transparent 70%);
+    bottom: -150px;
+    right: -150px;
+    animation-delay: 5s;
+}
+
+/* Blob floating animation */
+@keyframes floatBlob {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(50px, -30px) rotate(20deg); }
+    50% { transform: translate(-30px, 40px) rotate(-15deg); }
+    75% { transform: translate(20px, -20px) rotate(10deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* Floating particles */
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(72, 179, 137, 0.1);
+    pointer-events: none;
+    animation: floatParticle linear infinite;
+}
+
+.particle1 { width: 15px; height: 15px; bottom: 10%; left: 10%; animation-duration: 20s; }
+.particle2 { width: 20px; height: 20px; bottom: 5%; left: 40%; animation-duration: 25s; }
+.particle3 { width: 12px; height: 12px; bottom: 15%; left: 70%; animation-duration: 18s; }
+.particle4 { width: 18px; height: 18px; bottom: 8%; left: 30%; animation-duration: 22s; }
+
+@keyframes floatParticle {
+    0% { transform: translateY(0) scale(0.5); opacity: 0.6; }
+    50% { transform: translateY(-120px) scale(1); opacity: 0.8; }
+    100% { transform: translateY(-250px) scale(0.5); opacity: 0; }
+}
+
+
+.form-box {
+    position: relative;
+    z-index: 1;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 24px; 
+    top: 2px;
+    transform: translateY(-50%);
+    border: none;
+    cursor: pointer;
+    color: #b0e0d3; 
+    font-size: 1.2rem;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.toggle-password:hover {
+    background: rgba(0, 200, 151, 0.2);
+    color: #00c997;
+}
+
+/* Password strength meter container */
+.password-strength {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.15); /* subtle glass effect */
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* Strength bar itself */
+.strength-bar {
+    height: 100%;
+    width: 0%;
+    border-radius: 6px;
+    transition: width 0.4s ease, background-color 0.4s ease;
+    background: #00c997; /* default color, will change dynamically */
+}
+
+/* Strength text */
+.strength-text {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: #b0e0d3;
+    font-weight: 500;
+}
+ 
+/* Remember Me + Forgot Password Container */
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 12px 0 20px;
+    font-size: 0.9rem;
+}
+
+/* Label for Remember Me */
+.remember-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.3s ease;
+}
+
+.remember-label:hover span {
+    color: #32e875;
+}
+
+/* Checkbox Styling */
+.remember-label input[type="checkbox"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #32e875;
+    border-radius: 4px;
+    margin-right: 8px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Checkbox glow + checkmark */
+.remember-label input[type="checkbox"]:checked {
+    background-color: #32e875;
+    box-shadow: 0 0 8px #32e875, 0 0 15px #32e875;
+}
+
+.remember-label input[type="checkbox"]:checked::after {
+    content: "✔";
+    position: absolute;
+    top: 0;
+    left: 3px;
+    font-size: 12px;
+    color: #0b1a20;
+    font-weight: bold;
+}
+
+/* Forgot Password link */
+.forgot-pass {
+    color: #32e875;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.forgot-pass:hover {
+    color: #fff;
+}
+
+
