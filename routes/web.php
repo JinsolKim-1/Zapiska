@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\SuperAuthController;
 
 // 🔹 HOME
 Route::get('/', function () {
@@ -16,7 +17,7 @@ Route::prefix('auth')->middleware('prevent-back-history')->group(function () {
 
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])
-        ->middleware('throttle:5,1')
+        ->middleware('throttle:5,1') 
         ->name('login.post');
 
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -80,6 +81,25 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         ->name('store');
     });
 
+});
+
+Route::prefix('superadmin')->group(function () {
+
+    Route::get('/login', [SuperAuthController::class, 'showLoginForm'])
+        ->name('superadmin.login');
+
+    Route::post('/login', [SuperAuthController::class, 'login'])
+        ->name('superadmin.login.post');
+
+    Route::post('/logout', [SuperAuthController::class, 'logout'])
+        ->name('superadmin.logout');
+
+    Route::middleware(['auth:superadmin', 'prevent-back-history'])->group(function () {
+        Route::get('/dashboard', function () {
+            return view('superadmin.dashboard');
+        })->name('superadmin.dashboard');
+
+    });
 });
 
 
