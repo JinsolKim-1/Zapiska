@@ -9,21 +9,7 @@
     @vite(['resources/css/superadmin.css', 'resources/js/superadmin.js'])
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h2>Zapiska</h2>
-        <a href="#" class="active"><i class="bx bx-home"></i> Dashboard</a>
-        <a href="#"><i class="bx bx-user"></i> Users</a>
-        <a href="#"><i class="bx bx-buildings"></i> Companies</a>
-        <a href="#"><i class="bx bx-clipboard"></i> Logs</a>
-        <a href="#"><i class="bx bx-cog"></i> Settings</a>
-        <a href="#"><i class="bx bx-bar-chart"></i> Reports</a>
-        <form method="POST" action="{{ route('superadmin.logout') }}">
-            @csrf
-            <button type="submit" class="logout"><i class="bx bx-log-out"></i> Logout</button>
-        </form>
-    </div>
-
+    @include('superadmin.includes.sidebar')
     <!-- Main Content -->
     <div class="main-content">
         <header class="top-header">
@@ -88,70 +74,15 @@
             </div>
         </section>
 
-        <!-- Charts -->
-        <section class="charts">
-            <div class="chart-container">
-                <h3>Company Verification Trend</h3>
-                <canvas id="companyTrendChart"></canvas>
-            </div>
-            <div class="chart-container">
-                <h3>User Growth Overview</h3>
-                <canvas id="userGrowthChart"></canvas>
-            </div>
-        </section>
-
-
-        <!-- Add SuperAdmin -->
-        <button class="add-btn" id="openModal"><i class="bx bx-plus-circle"></i> Add Associate</button>
-    </div>
-
-    <!-- Add SuperAdmin Modal -->
-    <div class="modal" id="superadminModal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">&times;</span>
-            <h2>Add New Associate</h2>
-
-            <form id="addSuperadminForm" enctype="multipart/form-data">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="superadminUsername">Username</label>
-                        <input type="text" id="superadminUsername" placeholder="Enter username" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="superadminEmail">Email</label>
-                        <input type="email" id="superadminEmail" placeholder="Enter email address" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="superadminPassword">Password</label>
-                        <input type="password" id="superadminPassword" placeholder="Enter password" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <input type="text" id="firstName" placeholder="Enter first name" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" id="lastName" placeholder="Enter last name" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="contact">Contact Number</label>
-                        <input type="text" id="contact" placeholder="Enter contact number" required>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="profile">Profile Picture</label>
-                        <input type="file" id="profile" accept="image/*">
-                    </div>
-                </div>
-
-                <button type="submit" class="add-btn">Create</button>
-            </form>
+    <section class="charts">
+        <div class="chart-container">
+            <h3>Company Verification Trend</h3>
+            <canvas id="companyTrendChart"></canvas>
         </div>
-    </div>
+        <div class="chart-container">
+            <h3>User Growth Overview</h3>
+            <canvas id="userGrowthChart"></canvas>
+        </div>
+    </section>
 </body>
 </html>

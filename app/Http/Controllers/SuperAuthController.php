@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
-use App\Models\SuperAdmin;
+use App\Models\Superadmin;
 
 class SuperAuthController extends Controller
 {
@@ -35,7 +35,7 @@ class SuperAuthController extends Controller
             ])->status(429);
         }
 
-        $super = SuperAdmin::where('super_email', $email)->first();
+        $super = Superadmin::where('super_email', $email)->first();
 
         if (! $super || ! Hash::check($request->input('super_password'), $super->super_password)) {
             RateLimiter::hit($key, $this->decayMinutes * 60);

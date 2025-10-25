@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\SuperAuthController;
+use App\Http\Controllers\SuperUserController;
 
 // 🔹 HOME
 Route::get('/', function () {
@@ -86,6 +87,7 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 
 Route::prefix('superadmin')->group(function () {
 
+    // 🔹 Authentication routes
     Route::get('/login', [SuperAuthController::class, 'showLoginForm'])
         ->name('superadmin.login');
 
@@ -95,13 +97,24 @@ Route::prefix('superadmin')->group(function () {
     Route::post('/logout', [SuperAuthController::class, 'logout'])
         ->name('superadmin.logout');
 
+    // 🔹 Protected routes
     Route::middleware(['auth:superadmin', 'prevent-back-history'])->group(function () {
+
+        // Dashboard
         Route::get('/dashboard', function () {
             $superadmin = Auth::guard('superadmin')->user();
             return view('superadmin.dashboard', compact('superadmin'));
         })->name('superadmin.dashboard');
 
+        Route::get('/users', [SuperUserController::class, 'index'])->name('superadmin.users');
+        Route::get('/users/fetch', [SuperUserController::class, 'fetch'])->name('superadmin.users.fetch');
+        Route::post('/users/store', [SuperUserController::class, 'store'])->name('superadmin.users.store');
+        Route::post('/users/update/{id}', [SuperUserController::class, 'update'])->name('superadmin.users.update');
+        Route::delete('/users/{id}', [SuperUserController::class, 'destroy'])->name('superadmin.users.destroy');
+
+        Route::get('/companies', [SuperUserController::class, 'index'])->name('superadmin.companies');
     });
 });
+
 
 
