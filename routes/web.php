@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
@@ -96,7 +97,8 @@ Route::prefix('superadmin')->group(function () {
 
     Route::middleware(['auth:superadmin', 'prevent-back-history'])->group(function () {
         Route::get('/dashboard', function () {
-            return view('superadmin.dashboard');
+            $superadmin = Auth::guard('superadmin')->user();
+            return view('superadmin.dashboard', compact('superadmin'));
         })->name('superadmin.dashboard');
 
     });
