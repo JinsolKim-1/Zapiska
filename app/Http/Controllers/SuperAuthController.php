@@ -51,7 +51,7 @@ class SuperAuthController extends Controller
         }
 
         RateLimiter::clear($key);
-        Auth::guard('superadmin')->login($super, true);
+        Auth::guard('superadmin')->login($super);
         $request->session()->regenerate();
 
         return redirect()->intended(route('superadmin.dashboard'));
