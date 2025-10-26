@@ -40,7 +40,7 @@
         <div class="form-group">
           <label for="company_number">Contact Number</label>
           <input type="tel" id="company_number" name="company_number" placeholder="+1 123 456 7890"
-           pattern="^\+?[0-9\s\-().]{7,20}$"
+           pattern="^\+?[0-9\s().-]{7,20}$"
            title="Enter a valid international phone number" required>
         </div>
 

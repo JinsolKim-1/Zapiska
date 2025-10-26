@@ -117,10 +117,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Edit User with password confirmation
-    editForm.addEventListener("submit", (e) => {
+    editForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         editErrors.innerHTML = "";
+
         const id = document.getElementById("editUserId").value;
+        const currentId = document.querySelector('meta[name="current-superadmin-id"]').content;
         const payload = {
             super_username: document.getElementById("editUsername").value,
             super_email: document.getElementById("editEmail").value,
@@ -130,38 +132,31 @@ document.addEventListener("DOMContentLoaded", () => {
             status: document.getElementById("editStatus").value
         };
 
-        openConfirmModal("Enter your password to confirm updating this user.", async (password) => {
-            try {
-                const res = await fetch(`/superadmin/users/update/${id}`, {
-                    method: "POST",
-                    headers: { "X-CSRF-TOKEN": csrf, "Content-Type": "application/json" },
-                    body: JSON.stringify({ ...payload, password_confirmation: password })
-                });
-                const data = await res.json();
-                if (!res.ok) {
-                    if (data.errors) editErrors.innerHTML = Object.values(data.errors).flat().join("<br>");
-                    else editErrors.textContent = data.message || "Failed to update.";
-                    return;
-                }
+        try {
+            const endpoint = (id === currentId)
+            ? `/superadmin/users/update/${id}`
+            : `/superadmin/request-edit/${id}`;
 
-                // Update table dynamically
-                const row = document.querySelector(`.user-row[data-id="${id}"]`);
-                row.querySelector("td:nth-child(2)").textContent = payload.super_username;
-                row.querySelector("td:nth-child(3)").textContent = payload.super_email;
-                row.querySelector(".status").textContent = payload.status.charAt(0).toUpperCase() + payload.status.slice(1);
-                row.dataset.username = payload.super_username;
-                row.dataset.email = payload.super_email;
-                row.dataset.firstName = payload.first_name;
-                row.dataset.lastName = payload.last_name;
-                row.dataset.contact = payload.contact;
-                row.dataset.status = payload.status.charAt(0).toUpperCase() + payload.status.slice(1);
+            const res = await fetch(endpoint, {
+                method: "POST",
+                headers: { 
+                    "X-CSRF-TOKEN": csrf, 
+                    "Content-Type": "application/json" 
+                },
+                body: JSON.stringify(payload)
+            });
 
-                showNotification("User updated!");
-                closeModal(viewModal);
-            } catch (err) {
-                editErrors.textContent = "Unexpected error: " + err.message;
+            const data = await res.json();
+
+            if (!res.ok) {
+                editErrors.innerHTML = data.message || "Failed to send edit request.";
+                return;
             }
-        });
+            closeModal(viewModal);
+
+        } catch (err) {
+            editErrors.textContent = "Unexpected error: " + err.message;
+        }
     });
 
     // Delete User with password confirmation

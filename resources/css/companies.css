@@ -1,0 +1,368 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+/* ================== Tokyo Night Theme Variables ================== */
+:root {
+    --bg-main: #0f111a;
+    --bg-card: rgba(26, 28, 40, 0.8);
+    --bg-glass: rgba(26, 28, 40, 0.6);
+    --accent-blue: #82aaff;
+    --accent-cyan: #89ddff;
+    --accent-purple: #bb9af7;
+    --accent-green: #9ece6a;
+    --accent-red: #f7768e;
+    --text-main: #c8d3f5;
+    --text-muted: #a9b1d6;
+    --border-light: rgba(255, 255, 255, 0.08);
+    --shadow-glow: 0 0 25px rgba(130, 170, 255, 0.25);
+    --transition: all 0.3s ease;
+}
+
+/* ================== Layout ================== */
+body {
+    background: var(--bg-main);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-main);
+    background-image: radial-gradient(circle at 20% 20%, #1a1b26 0%, #0f111a 100%);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.main-content {
+    margin-left: 280px;
+    padding: 40px;
+}
+
+/* ================== Header ================== */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    padding: 20px 30px;
+    box-shadow: var(--shadow-glow);
+    margin-bottom: 40px;
+    backdrop-filter: blur(10px);
+}
+
+.top-header h1 {
+    color: var(--accent-blue);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#datetime {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* ================== Messages ================== */
+.success-message,
+.error-message {
+    border-radius: 10px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.success-message {
+    background: rgba(158, 206, 106, 0.15);
+    color: var(--accent-green);
+    border-left: 4px solid var(--accent-green);
+}
+
+.error-message {
+    background: rgba(247, 118, 142, 0.15);
+    color: var(--accent-red);
+    border-left: 4px solid var(--accent-red);
+}
+
+/* ================== Verification Panel ================== */
+.verification-panel {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    padding: 25px 30px;
+    box-shadow: var(--shadow-glow);
+    backdrop-filter: blur(12px);
+}
+
+.verification-panel h2 {
+    color: var(--accent-blue);
+    margin-bottom: 25px;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.empty-message {
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+}
+
+/* ================== Company Cards ================== */
+.company-list {
+    display: grid;
+    gap: 20px;
+}
+
+.company-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 18px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: var(--transition);
+}
+
+.company-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 25px rgba(137, 221, 255, 0.15);
+}
+
+.company-info h3 {
+    color: var(--accent-purple);
+    margin: 0 0 8px 0;
+}
+
+.company-info p {
+    margin: 3px 0;
+    color: var(--text-muted);
+}
+
+.company-info a {
+    color: var(--accent-cyan);
+    text-decoration: none;
+}
+
+.company-info a:hover {
+    text-decoration: underline;
+}
+
+/* ================== Status ================== */
+.status-label {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.status-label.pending {
+    background: rgba(255, 235, 59, 0.15);
+    color: #ffeb3b;
+}
+.status-label.verified {
+    background: rgba(158, 206, 106, 0.15);
+    color: var(--accent-green);
+}
+.status-label.rejected {
+    background: rgba(247, 118, 142, 0.15);
+    color: var(--accent-red);
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.approve-btn, .reject-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    box-shadow: 0 0 10px transparent;
+}
+
+.approve-btn {
+    background: linear-gradient(135deg, var(--accent-green), #b4e78a);
+    color: #0f111a;
+    margin-right: 10px;
+}
+.approve-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 12px rgba(158, 206, 106, 0.45);
+}
+.reject-btn {
+    background: linear-gradient(135deg, var(--accent-red), #ff9cae);
+    color: #0f111a;
+}
+
+.reject-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 12px rgba(247, 118, 142, 0.45);
+}
+
+/* Icon alignment fix */
+.approve-btn i,
+.reject-btn i {
+    font-size: 1rem;
+    margin-right: 4px;
+}
+
+/* ================== Company Table ================== */
+.companies-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-glow);
+    backdrop-filter: blur(12px);
+    margin-top: 25px;
+}
+
+.companies-table thead {
+    background: rgba(130, 170, 255, 0.1);
+}
+
+.companies-table th,
+.companies-table td {
+    padding: 14px 18px;
+    text-align: left;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.companies-table th {
+    color: var(--accent-cyan);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.companies-table tbody tr:hover {
+    background: rgba(137, 221, 255, 0.05);
+    transition: var(--transition);
+}
+
+.companies-table td a {
+    color: var(--accent-blue);
+    text-decoration: none;
+}
+
+.companies-table td a:hover {
+    text-decoration: underline;
+}
+
+/* Round table edges */
+.companies-table thead tr:first-child th:first-child {
+    border-top-left-radius: 16px;
+}
+.companies-table thead tr:first-child th:last-child {
+    border-top-right-radius: 16px;
+}
+
+/* ================== Custom Confirmation Modal ================== */
+.confirm-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 17, 26, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    backdrop-filter: blur(6px);
+}
+
+.confirm-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.confirm-content {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 25px 30px;
+    width: 320px;
+    text-align: center;
+    box-shadow: var(--shadow-glow);
+}
+
+.confirm-content h3 {
+    color: var(--accent-purple);
+    margin-bottom: 10px;
+}
+
+.confirm-content p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: space-around;
+}
+
+.confirm-yes,
+.confirm-no {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.confirm-yes {
+    background: var(--accent-blue);
+    color: #0f111a;
+}
+
+.confirm-yes:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px var(--accent-blue);
+}
+
+.confirm-no {
+    background: var(--accent-red);
+    color: #0f111a;
+}
+
+.confirm-no:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px var(--accent-red);
+}
+
+
+/* ================== Responsive ================== */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+    .company-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .actions {
+        flex-direction: row;
+        margin-top: 10px;
+    }
+}

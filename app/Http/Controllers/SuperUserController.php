@@ -5,15 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Superadmin;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
+use App\Models\Superadmin;
+use App\Mail\SuperadminConfirm;
 
 class SuperUserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:superadmin');
+        $this->middleware('auth:superadmin')->except(['confirmEdit']);
     }
 
     public function index()
@@ -71,6 +76,74 @@ class SuperUserController extends Controller
         ], 201);
     }
 
+    /**
+     * 🔹 Request edit confirmation email (instead of direct update)
+     */
+    public function requestEdit(Request $request, $id)
+    {
+        $target = Superadmin::find($id);
+        $editor = Auth::guard('superadmin')->user();
+
+        if (!$target) {
+            return response()->json(['message' => 'Target superadmin not found.'], 404);
+        }
+
+        // Prevent modifying primary superadmin
+        if ($target->super_id === 1 && $editor->super_id !== 1) {
+            return response()->json(['message' => 'You cannot modify the primary superadmin.'], 403);
+        }
+
+        // Encrypt pending data
+        $payload = Crypt::encrypt([
+            'id' => $id,
+            'updates' => $request->all(),
+            'expires' => Carbon::now()->addMinutes(30)->timestamp,
+        ]);
+
+        // Signed link (valid for 30 minutes)
+        $url = URL::temporarySignedRoute(
+            'superadmin.confirmEdit',
+            now()->addMinutes(10),
+            ['id' => $id, 'token' => $payload]
+        );
+
+        // Send confirmation email to target user
+        Mail::to($target->super_email)->send(new SuperadminConfirm($target, $editor, $url));
+
+        return response()->json(['message' => 'Confirmation link sent to target user email.']);
+    }
+
+    /**
+     * 🔹 When target user clicks confirmation link in email
+     */
+    public function confirmEdit(Request $request, $id)
+    {
+        if (!$request->hasValidSignature()) {
+            return view('superadmin.email_invalid')->with('message', 'Invalid or expired confirmation link.');
+        }
+
+        try {
+            $data = Crypt::decrypt($request->token);
+
+            if (Carbon::now()->timestamp > $data['expires']) {
+                return view('superadmin.email_invalid')->with('message', 'This confirmation link has expired.');
+            }
+
+            $target = Superadmin::find($data['id']);
+            if (!$target) {
+                return view('superadmin.email_invalid')->with('message', 'Superadmin not found.');
+            }
+
+            // Apply updates
+            $target->update($data['updates']);
+
+            return view('superadmin.email_confirmed')->with('message', 'Your account details were successfully updated.');
+
+        } catch (\Exception $e) {
+            return view('superadmin.email_invalid')->with('message', 'Invalid or corrupted confirmation link.');
+        }
+    }
+
     public function update(Request $request, $id)
     {
         $admin = Auth::guard('superadmin')->user();
@@ -80,27 +153,20 @@ class SuperUserController extends Controller
             return response()->json(['message' => 'User not found.'], 404);
         }
 
-        // Password confirmation
-        if (!$request->password_confirmation || !Hash::check($request->password_confirmation, $admin->super_password)) {
-            return response()->json(['message' => 'Incorrect password.'], 403);
-        }
-
-        // Optional: prevent edits to primary superadmin (id=1)
-        if ($user->super_id === 1 && $admin->super_id !== 1) {
-            return response()->json(['message' => 'You cannot modify the primary superadmin.'], 403);
+        // Prevent others from editing directly (handled via requestEdit)
+        if ($admin->super_id !== $user->super_id) {
+            return response()->json([
+                'message' => 'You cannot directly update another superadmin. Use the confirmation email flow.'
+            ], 403);
         }
 
         $validated = $request->validate([
             'super_username' => [
-                'required',
-                'string',
-                'max:100',
+                'required', 'string', 'max:100',
                 Rule::unique('superadmins', 'super_username')->ignore($user->super_id, 'super_id'),
             ],
             'super_email' => [
-                'required',
-                'email',
-                'max:100',
+                'required', 'email', 'max:100',
                 Rule::unique('superadmins', 'super_email')->ignore($user->super_id, 'super_id'),
             ],
             'first_name' => 'nullable|string|max:100',
@@ -152,7 +218,6 @@ class SuperUserController extends Controller
             return response()->json(['message' => 'Cannot delete the primary superadmin.'], 403);
         }
 
-        // Delete profile if user is inactive
         if ($user->status === 'inactive') {
             if ($user->profile && Storage::disk('public')->exists($user->profile)) {
                 Storage::disk('public')->delete($user->profile);
