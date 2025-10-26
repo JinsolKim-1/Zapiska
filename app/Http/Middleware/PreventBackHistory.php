@@ -13,16 +13,24 @@ class PreventBackHistory
     {
         $response = $next($request);
 
-        $response-> headers->set('Cache-Control','no-cache,no-store, must-revalidate');
-        $response-> headers->set('Pragma','no-cache');
-        $response-> headers->set('Expires','Sat,01 Jan 1990 00:00:00 GMT');
+        $response->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
+        $response->headers->set('Pragma', 'no-cache');
+        $response->headers->set('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
 
-        if (!Auth::check()) {
-            $protectedPaths =['password/reset','password/email','password/forgot','post-verification','welcmain',];
+        // Only redirect guests
+        if (!Auth::guard('web')->check()) {
+            $protectedPaths = [
+                'password/reset',
+                'password/email',
+                'password/forgot',
+                'post-verification',
+                'welcmain',
+            ];
 
             foreach ($protectedPaths as $path) {
-                if ($request->is($path) || $request->is($path . '/*')){
-                    return redirect()->route('login')-> with('info', 'Session expired. Please login again.');
+                if ($request->is($path) || $request->is($path . '/*')) {
+                    return redirect()->route('login')
+                        ->with('info', 'Session expired. Please login again.');
                 }
             }
         }

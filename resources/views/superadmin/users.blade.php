@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="current-superadmin-id" content="{{ Auth::guard('superadmin')->user()->super_id }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control panel | Manage Users</title>
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
@@ -52,7 +53,6 @@
                         <th>Email</th>
                         <th>Date Created</th>
                         <th>Status</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="superadminTableBody">
@@ -79,14 +79,6 @@
                                 <span class="status {{ strtolower($sa->status) }}">
                                     {{ ucfirst($sa->status) }}
                                 </span>
-                            </td>
-                            <td>
-                                <button class="edit-btn" data-id="{{ $sa->super_id }}">
-                                    <i class="bx bx-edit"></i>
-                                </button>
-                                <button class="delete-btn" data-id="{{ $sa->super_id }}">
-                                    <i class="bx bx-trash"></i>
-                                </button>
                             </td>
                         </tr>
                     @empty
@@ -161,7 +153,6 @@
             </div>
         </div>
 
-            <h3>Edit User</h3>
             <div id="editErrors" style="color:red; margin-bottom:10px;"></div>
             <div class="modal-content large">
                 <h2>Edit User Information</h2>
@@ -207,7 +198,6 @@
                             <input type="password" id="editPasswordConfirm" placeholder="Enter your password to confirm">
                         </div>
                     </div>
-
                     <div class="form-actions">
                         <button type="submit" class="add-btn">Save Changes</button>
                         <button type="button" id="deleteUserBtn" class="delete-btn">Delete User</button>

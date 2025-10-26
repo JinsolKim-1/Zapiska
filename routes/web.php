@@ -7,6 +7,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\SuperAuthController;
 use App\Http\Controllers\SuperUserController;
+use App\Http\Controllers\SuperCompanyController;
+
 
 // 🔹 HOME
 Route::get('/', function () {
@@ -81,6 +83,8 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::post('/store', [CompanyController::class, 'store'])
         ->middleware('throttle:5,1')
         ->name('store');
+
+        Route::get('/verify/{token}', [CompanyController::class, 'verify'])->name('verify');
     });
 
 });
@@ -112,8 +116,22 @@ Route::prefix('superadmin')->group(function () {
         Route::post('/users/update/{id}', [SuperUserController::class, 'update'])->name('superadmin.users.update');
         Route::delete('/users/{id}', [SuperUserController::class, 'destroy'])->name('superadmin.users.destroy');
 
-        Route::get('/companies', [SuperUserController::class, 'index'])->name('superadmin.companies');
+        Route::post('/request-edit/{id}', [SuperUserController::class, 'requestEdit'])
+            ->name('superadmin.requestEdit');
+
+        Route::get('/confirm-edit/{id}', [SuperUserController::class, 'confirmEdit'])
+            ->name('superadmin.confirmEdit');
+
+         Route::get('/companies', [SuperCompanyController::class, 'index'])
+        ->name('superadmin.companies');
+
+        Route::post('/companies/{id}/approve', [SuperCompanyController::class, 'approve'])
+        ->name('superadmin.companies.approve');
+
+        Route::post('/companies/{id}/reject', [SuperCompanyController::class, 'reject'])
+        ->name('superadmin.companies.reject');
     });
+    
 });
 
 

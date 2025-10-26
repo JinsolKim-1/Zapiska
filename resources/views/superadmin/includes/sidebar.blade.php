@@ -24,7 +24,7 @@
         <a href="{{ route('superadmin.companies') }}" 
             class="{{ request()->is('superadmin/companies') ? 'active' : '' }}">
             <i class="bx bx-buildings"></i> Companies
-         </a>
+        </a>
 
         <form method="POST" action="{{ route('superadmin.logout') }}">
             @csrf
