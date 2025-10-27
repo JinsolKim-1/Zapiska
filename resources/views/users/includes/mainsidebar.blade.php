@@ -14,13 +14,14 @@
 
         {{-- 🔹 Check user role --}}
         @php
-            $role = Auth::user()->usertype ?? 'guest';
+            $role = Auth::user()->role ? Auth::user()->role->category : 'guest';
         @endphp
+
 
         {{-- 🔸 ADMIN MENU --}}
         @if ($role === 'admin')
             <h3 class="sidebar-section">ADMIN</h3>
-            <a href="{{ route('admin.analytics') }}" class="{{ request()->is('admin/analytics') ? 'active' : '' }}">
+            <a href="{{ route('admin.dashboard') }}" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
                 <i class="bx bx-bar-chart"></i> Analytics
             </a>
             <a href="{{ route('admin.departments') }}" class="{{ request()->is('admin/departments') ? 'active' : '' }}">

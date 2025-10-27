@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->alias(['prevent-back-history'=>\App\Http\Middleware\PreventBackHistory::class,]);
+        $middleware->alias([
+            'prevent-back-history'=>\App\Http\Middleware\PreventBackHistory::class,
+            'company.verified' => \App\Http\Middleware\EnsureCompanyVerified::class,]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

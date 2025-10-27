@@ -130,6 +130,7 @@ class AuthController extends Controller
 
     // 🔹 Handle login with rate limiting
     public function login(Request $request) {
+        
         $request->validate([
             'username_login' => 'required|string',
             'password_login' => 'required|string',
@@ -149,25 +150,48 @@ class AuthController extends Controller
 
         $loginSuccess = Auth::attempt($credentials, $request->filled('remember'));
 
-        // Log attempt
+        // Log every login attempt
         LoginAttempt::create([
             'username' => $request->username_login,
             'remote_ip' => $request->ip(),
             'success' => $loginSuccess ? 1 : 0,
         ]);
 
-        RateLimiter::hit($key, 60); // 1 minute decay
+        RateLimiter::hit($key, 60); // limit per minute
 
-        if ($loginSuccess) {
-            $request->session()->regenerate();
-            if (Auth::user()->verification === 'pending') {
-                return redirect()->route('post.verification')
-                    ->with('info', 'Please verify your email before accessing the system.');
-            }
-            return redirect()->intended(route('welcmain'));
+        if (!$loginSuccess) {
+            return back()->withErrors(['username_login' => 'Invalid username or password.'])->onlyInput('username_login');
         }
 
-        return back()->withErrors(['username_login' => 'Invalid username or password.'])->onlyInput('username_login');
+        // ✅ Regenerate session after successful login
+        $request->session()->regenerate();
+        $user = Auth::user();
+
+        // ✅ If user is SuperAdmin
+        if (isset($user->usertype) && $user->usertype === 'superadmin') {
+            return redirect()->route('superadmin.dashboard');
+        }
+
+        // ✅ If user's email verification is pending
+        if ($user->verification === 'pending') {
+            return redirect()->route('post.verification')
+                ->with('info', 'Please verify your email before accessing the system.');
+        }
+
+        // ✅ If user created a company
+        if ($user->company) {
+            // If company is verified → redirect to company dashboard
+            if ($user->company->verification_status === 'verified') {
+                return redirect()->route('company.dashboard', ['id' => $user->company->company_id]);
+            }
+
+            // If company still pending or rejected
+            return redirect()->route('welcmain')
+                ->with('error', 'Your company is still under review or not approved yet.');
+        }
+
+        // ✅ If user does not have a company
+        return redirect()->route('welcmain');
     }
 
     // 🔹 Show post-verification form

@@ -9,29 +9,28 @@ use App\Models\Company;
 
 class CompanyController extends Controller
 {
-    // Show company registration form
+    // 🔹 Show company registration form
     public function create()
     {
-        // Check if the user already has an approved company
         $existingApproved = Company::where('creator_id', Auth::id())
             ->where('verification_status', 'verified')
             ->first();
 
         if ($existingApproved) {
-            return redirect()->route('welcmain')
+            return redirect()->route('company.dashboard')
                 ->with('error', 'You already have an approved company and cannot create another.');
         }
 
         return view('company_register');
     }
 
-    // Store company (submission only, no email)
+    // 🔹 Store company (submission)
     public function store(Request $request)
     {
         if (Company::where('creator_id', Auth::id())
             ->where('verification_status', 'verified')
             ->exists()) {
-            return redirect()->route('welcmain')
+            return redirect()->route('company.dashboard')
                 ->with('error', 'You already have an approved company.');
         }
 
@@ -49,7 +48,6 @@ class CompanyController extends Controller
         try {
             DB::beginTransaction();
 
-            // Create company with "pending" status
             Company::create([
                 'creator_id' => Auth::id(),
                 'company_name' => $validated['company_name'],
@@ -70,4 +68,35 @@ class CompanyController extends Controller
         return redirect()->route('welcmain')
             ->with('success', 'Your company has been submitted. Await admin approval.');
     }
+
+    // 🔹 Company Dashboard
+    public function dashboard(Request $request)
+    {
+        $user = Auth::user();
+
+        // Ensure the user is authenticated
+        if ($request->query()) {
+            return redirect()->route('company.dashboard');
+        }
+
+        if (!$user) {
+            return redirect()->route('login')
+                ->with('error', 'You must be logged in to access the dashboard.');
+        }
+
+        if (!$user->company_id || !$user->company) {
+            return redirect()->route('welcmain')
+                ->with('error', 'You have no registered company.');
+        }
+
+        $company = $user->company;
+
+        if ($company->verification_status !== 'verified') {
+            return redirect()->route('welcmain')
+                ->with('error', 'Your company is still pending approval.');
+        }
+
+        return view('users.Maindashboard', compact('user', 'company'));
+        }
+
 }

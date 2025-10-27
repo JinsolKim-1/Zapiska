@@ -28,4 +28,9 @@ class Company extends Model
     {
         return $this->belongsTo(User::class, 'creator_id', 'user_id');
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'company_id', 'company_id');
+    }
 }
