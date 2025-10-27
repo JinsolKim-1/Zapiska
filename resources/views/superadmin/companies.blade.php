@@ -59,7 +59,9 @@
                                 </td>
                                 <td>
                                     @if($company->verification_status === 'pending')
-                                        <form method="POST" action="{{ route('superadmin.companies.approve', $company->company_id) }}" class="approve-form" style="display:inline-block;">
+                                        <form method="POST" action="{{ route('superadmin.companies.approve', $company->company_id) }}" 
+                                        class="approve-form" 
+                                        style="display:inline-block;">
                                             @csrf
                                             <button type="button" class="approve-btn" data-action="approve">
                                                 <i class='bx bx-check'></i> Approve

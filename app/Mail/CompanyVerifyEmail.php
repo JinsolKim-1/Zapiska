@@ -28,8 +28,8 @@ class CompanyVerifyEmail extends Mailable
                     ->view('emails.company_verify')
                     ->with([
                         'companyName' => $this->company->company_name,
-                        'firstName' => $this->company->creator->firstname ?? 'User',
                         'verifyUrl' => $verifyUrl,
+                        'firstName' => $this->company->creator->firstname ?? 'User',
                     ]);
     }
 }

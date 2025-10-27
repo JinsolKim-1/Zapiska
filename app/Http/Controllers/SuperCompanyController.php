@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\CompanyApproved;
 use Illuminate\Http\Request;
 use App\Models\Company;
 use App\Models\CompanyVerification;
@@ -22,28 +23,54 @@ class SuperCompanyController extends Controller
 
     // Approve a company
     public function approve($id)
-    {
+    {    
         $company = Company::findOrFail($id);
 
         DB::beginTransaction();
         try {
             // Update company status to approved (admin approved)
-            $company->update(['verification_status' => 'approved']);
+            $company->update(['verification_status' => 'verified']);
 
-            // Generate verification token
-            $token = Str::random(60);
+        if ($company->creator_id) {
+            DB::table('users')
+                ->where('user_id', $company->creator_id)
+                ->update(['company_id' => $company->company_id]);
+        }
 
-            CompanyVerification::create([
+        $existingAdminRole = DB::table('roles')
+            ->where('company_id', $company->company_id)
+            ->where('category', 'admin')
+            ->first();
+
+        $adminRoleId = $existingAdminRole
+            ? $existingAdminRole->role_id
+            : DB::table('roles')->insertGetId([
                 'company_id' => $company->company_id,
-                'company_token' => $token,
-                'expires_at' => now()->addHours(24),
-                'status' => 'pending',
+                'role_name' => 'Administrator',
+                'category' => 'admin',
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
 
-            // Send verification email
-            Mail::to($company->company_email)->send(new CompanyVerifyEmail($company, $token));
+        if ($company->creator_id) {
+            DB::table('users')
+                ->where('user_id', $company->creator_id)
+                ->update(['role_id' => $adminRoleId]);
+        }
 
-            DB::commit();
+        $token = Str::random(60);
+
+        CompanyVerification::create([
+            'company_id' => $company->company_id,
+            'company_token' => $token,
+            'expires_at' => now()->addHours(24),
+            'status' => 'pending',
+        ]);
+
+            // Send verification email
+        Mail::to($company->company_email)->send(new CompanyApproved($company));
+
+        DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('superadmin.companies')
