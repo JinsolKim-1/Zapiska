@@ -13,7 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'prevent-back-history'=>\App\Http\Middleware\PreventBackHistory::class,
-            'company.verified' => \App\Http\Middleware\EnsureCompanyVerified::class,]);
+            'company.verified' => \App\Http\Middleware\EnsureCompanyVerified::class,
+            'company.member' => \App\Http\Middleware\EnsureUserIsMember::class,
+        ]);
 
     })
     ->withExceptions(function (Exceptions $exceptions): void {

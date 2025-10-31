@@ -27,7 +27,8 @@
                 <!-- Username -->
                 <div class="input-box @error('username') has-error @enderror">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" value="{{ old('username') }}" placeholder="Enter your username" required>
+                    <input type="text" id="username" name="username" value="{{ old('username') }}" placeholder="Enter your username" 
+                    autocomplete="off" required>
                     <i class='bx bxs-user'></i>
                     @error('username')
                         <small class="error-text">{{ $message }}</small>
@@ -37,7 +38,8 @@
                 <!-- Email -->
                 <div class="input-box @error('email') has-error @enderror">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="Enter your email" required>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="Enter your email" 
+                    autocomplete="off" required>
                     <i class='bx bx-envelope'></i>
                     @error('email')
                         <small class="error-text">{{ $message }}</small>

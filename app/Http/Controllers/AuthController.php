@@ -122,6 +122,20 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
+        
+        if (session()->has('invite_token')) {
+            $token = session('invite_token');
+            $invite = \App\Models\Invitation::where('invite_token', $token)->first();
+
+            if ($invite) {
+                $user->company_id = $invite->company_id;
+                $user->role_id = $invite->role_id;
+                $user->save();
+
+                $invite->update(['status' => 'approved']);
+                session()->forget('invite_token');
+            }
+        }
         $this->sendVerificationCode($user);
 
         return redirect()->route('post.verification')
@@ -240,6 +254,10 @@ class AuthController extends Controller
             'verification' => 'verified',
             'profile_complete' => 1,
         ]);
+        if ($user->company) {
+            return redirect()->route('company.dashboard', ['id' => $user->company->company_id])
+                ->with('success', 'Profile completed successfully!');
+}
 
         return redirect()->route('welcmain')->with('success', 'Profile completed successfully!');
     }

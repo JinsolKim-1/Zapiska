@@ -10,7 +10,13 @@
 </head>
 <body>
     <div class="sidebar">
-        <h2>Zapiska</h2>
+
+        @php
+            $companyName = Auth::user()->company->company_name ?? 'Zapiska';
+        @endphp
+        
+        <h2>{{ $companyName }}</h2>
+
 
         {{-- 🔹 Check user role --}}
         @php
@@ -21,28 +27,34 @@
         {{-- 🔸 ADMIN MENU --}}
         @if ($role === 'admin')
             <h3 class="sidebar-section">ADMIN</h3>
-            <a href="{{ route('admin.dashboard') }}" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
+            <a href="{{ route('users.dashboard') }}" class="{{ request()->is('users/dashboard') ? 'active' : '' }}">
                 <i class="bx bx-bar-chart"></i> Analytics
             </a>
-            <a href="{{ route('admin.departments') }}" class="{{ request()->is('admin/departments') ? 'active' : '' }}">
+           <a href="{{ route('users.departments') }}" class="{{ request()->is('users/departments') ? 'active' : '' }}">
                 <i class="bx bx-building"></i> Departments
             </a>
-            <a href="{{ route('admin.assets') }}" class="{{ request()->is('admin/assets') ? 'active' : '' }}">
-                <i class="bx bx-box"></i> Assets
+            <a href="{{ route('users.assets') }}" class="{{ request()->is('usersassets') ? 'active' : '' }}">
+                <i class='bx bx-package'></i> Assets
             </a>
-            <a href="{{ route('admin.requests') }}" class="{{ request()->is('admin/requests') ? 'active' : '' }}">
+            <a href="{{ route('users.inventory.index') }}" class="{{ request()->is('users/inventory') ? 'active' : '' }}">
+                <i class="bx bx-box"></i> Inventory
+            </a>
+            <a href="{{ route('users.requests') }}" class="{{ request()->is('users/requests') ? 'active' : '' }}">
                 <i class="bx bx-notepad"></i> Requests
             </a>
-            <a href="{{ route('admin.receipts') }}" class="{{ request()->is('admin/receipts') ? 'active' : '' }}">
+            <a href="{{ route('users.receipts') }}" class="{{ request()->is('users/receipts') ? 'active' : '' }}">
                 <i class="bx bx-receipt"></i> Receipts
             </a>
-            <a href="{{ route('admin.users') }}" class="{{ request()->is('admin/users') ? 'active' : '' }}">
+            <a href="{{ route('users.users') }}" class="{{ request()->is('users/users') ? 'active' : '' }}">
                 <i class="bx bx-user"></i> Users
+            </a>
+            <a href="{{ route('users.invite') }}" class="{{ request()->is('users/invite') ? 'active' : '' }}">
+                <i class="bx bx-envelope"></i> Invite
             </a>
 
             <div class="sidebar-divider"></div>
 
-            <a href="{{ route('admin.settings') }}" class="{{ request()->is('admin/settings') ? 'active' : '' }}">
+            <a href="{{ route('users.settings') }}" class="{{ request()->is('users/settings') ? 'active' : '' }}">
                 <i class="bx bx-cog"></i> Settings
             </a>
             <a href="{{ route('logout') }}"
@@ -60,17 +72,25 @@
             <a href="{{ route('manager.analytics') }}" class="{{ request()->is('manager/analytics') ? 'active' : '' }}">
                 <i class="bx bx-bar-chart"></i> Analytics
             </a>
+
             <a href="{{ route('manager.assets') }}" class="{{ request()->is('manager/assets') ? 'active' : '' }}">
-                <i class="bx bx-box"></i> Assets
+                <i class='bx bx-package'></i> Assets
             </a>
+
+            <a href="{{ route('manager.inventory') }}" class="{{ request()->is('manager/inventory') ? 'active' : '' }}">
+                <i class="bx bx-box"></i> Inventory
+            </a>
+
             <a href="{{ route('manager.requests') }}" class="{{ request()->is('manager/requests') ? 'active' : '' }}">
                 <i class="bx bx-notepad"></i> Requests
             </a>
+
             <a href="{{ route('manager.receipts') }}" class="{{ request()->is('manager/receipts') ? 'active' : '' }}">
                 <i class="bx bx-receipt"></i> Receipts
             </a>
+
             <a href="{{ route('manager.users') }}" class="{{ request()->is('manager/users') ? 'active' : '' }}">
-                <i class="bx bx-user"></i> Users
+                <i class="bx bx-user"></i> My Team
             </a>
 
             <div class="sidebar-divider"></div>
@@ -87,15 +107,23 @@
         {{-- 🔸 EMPLOYEE MENU --}}
         @if ($role === 'employee')
             <h3 class="sidebar-section">EMPLOYEE</h3>
-            <a href="{{ route('employee.analytics') }}" class="{{ request()->is('employee/analytics') ? 'active' : '' }}">
+
+            <a href="{{ route('employee.dashboard') }}" class="{{ request()->is('employee/dashboard') ? 'active' : '' }}">
                 <i class="bx bx-bar-chart"></i> Analytics
             </a>
+
             <a href="{{ route('employee.assets') }}" class="{{ request()->is('employee/assets') ? 'active' : '' }}">
-                <i class="bx bx-box"></i> Assets
+                <i class='bx bx-package'></i> Assets
             </a>
-            <a href="{{ route('employee.requests') }}" class="{{ request()->is('employee/requests') ? 'active' : '' }}">
-                <i class="bx bx-notepad"></i> Requests
+
+            <a href="{{ route('employee.inventory') }}" class="{{ request()->is('employee/inventory') ? 'active' : '' }}">
+                <i class="bx bx-box"></i> Inventory
             </a>
+
+            <a href="{{ route('employee.myRequests') }}" class="{{ request()->is('employee/my-requests') ? 'active' : '' }}">
+                <i class="bx bx-notepad"></i> My Requests
+            </a>
+
             <a href="{{ route('employee.receipts') }}" class="{{ request()->is('employee/receipts') ? 'active' : '' }}">
                 <i class="bx bx-receipt"></i> Receipts
             </a>

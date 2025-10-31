@@ -62,13 +62,39 @@
                     Create Company
                 </a>
                 
-                <button onclick="joinCompany()" class="cta-button border-2 border-teal-accent text-teal-accent hover:bg-teal-accent/10 transform hover:scale-105">
+                <button onclick="openJoinModal()" class="cta-button border-2 border-teal-accent text-teal-accent hover:bg-teal-accent/10 transform hover:scale-105">
                     Join a Company
                 </button>
             </div>
             
             <div id="message-box" class="mt-8 p-3 rounded-lg bg-gray-700/50 text-sm text-gray-200 hidden"></div>
         </main>
+    </div>
+
+        {{-- Join Company Modal --}}
+    <div id="joinModal" class="fixed inset-0 bg-black/70 flex justify-center items-center z-50 hidden">
+        <div class="bg-[#051A23] rounded-xl p-6 w-80 text-white relative">
+            <h3 class="text-xl font-semibold mb-4">Join a Company</h3>
+            <p class="text-gray-300 mb-3">Paste the invite code provided by your administrator:</p>
+            <form id="joinCompanyForm" method="POST" action="{{ route('company.join') }}">
+                @csrf
+                <input type="text" name="invite_code" placeholder="Invite UUID" 
+                       autocomplete="off"
+                       class="w-full p-2 mb-4 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeJoinModal()"
+                            class="px-4 py-2 border border-teal-accent rounded-lg hover:bg-teal-accent/10">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="px-4 py-2 bg-teal-accent text-[#051A23] rounded-lg hover:bg-teal-accent/90">
+                        Join
+                    </button>
+                </div>
+            </form>
+            <button onclick="closeJoinModal()" 
+                    class="absolute top-3 right-3 text-gray-400 hover:text-white text-xl">&times;</button>
+        </div>
     </div>
 
     {{-- JS --}}
