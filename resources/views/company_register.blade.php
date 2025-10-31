@@ -27,12 +27,14 @@
       <div class="form-row">
         <div class="form-group">
           <label for="company_name">Company Name</label>
-          <input type="text" id="company_name" name="company_name" placeholder="Enter your company name" required>
+          <input type="text" id="company_name" name="company_name" placeholder="Enter your company name"
+            autocomplete="off" required>
         </div>
 
         <div class="form-group">
           <label for="company_email">Company Email</label>
-          <input type="email" id="company_email" name="company_email" placeholder="example@company.com" required>
+          <input type="email" id="company_email" name="company_email" placeholder="example@company.com" 
+            autocomplete="off" required>
         </div>
       </div>
 
@@ -41,18 +43,21 @@
           <label for="company_number">Contact Number</label>
           <input type="tel" id="company_number" name="company_number" placeholder="+1 123 456 7890"
            pattern="^\+?[0-9\s().-]{7,20}$"
-           title="Enter a valid international phone number" required>
+           title="Enter a valid international phone number" 
+           autocomplete="off" required>
         </div>
 
         <div class="form-group">
           <label for="company_website">Website</label>
-          <input type="url" id="company_website" name="company_website" placeholder="https://yourcompany.com">
+          <input type="url" id="company_website" name="company_website" placeholder="https://yourcompany.com"
+          autocomplete="off">
         </div>
       </div>
 
       <div class="form-group full-width">
         <label for="company_address">Address</label>
-        <input type="text" id="company_address" name="company_address" placeholder="Enter full company address">
+        <input type="text" id="company_address" name="company_address" placeholder="Enter full company address"
+        autocomplete="off">
       </div>
 
       <div class="form-group full-width">

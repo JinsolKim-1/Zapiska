@@ -1,0 +1,203 @@
+/* ===== Global ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f8fafc;
+    color: #111827;
+    min-height: 100vh;
+    display: flex;
+}
+
+/* ===== Main Content ===== */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin-left: 250px; /* match sidebar width */
+}
+
+/* ===== Dashboard Header ===== */
+.dashboard-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: #ffffff;
+    padding: 1.5rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-header h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #0f172a;
+    text-transform: uppercase;
+}
+
+.manager-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+    color: #374151;
+}
+
+.edit-manager-btn {
+    background: #10b981;
+    color: white;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.edit-manager-btn:hover {
+    background: #059669;
+}
+
+/* ===== Add User Button ===== */
+.add-user-container {
+    margin-bottom: 1rem;
+}
+
+.add-user-btn {
+    background: #10b981;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.add-user-btn:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+/* ===== Users Table ===== */
+.users-table-section {
+    overflow-x: auto;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+}
+
+.users-table th, .users-table td {
+    padding: 0.8rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.users-table th {
+    background: #f3f4f6;
+    color: #064e3b;
+    font-weight: 600;
+}
+
+.users-table td {
+    color: #111827;
+    font-size: 0.9rem;
+}
+
+.kick-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 0.3rem;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s ease;
+}
+
+.kick-btn:hover {
+    background: #b91c1c;
+}
+
+/* ===== Form Section ===== */
+.form-section {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.form-group input,
+.form-group select {
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.submit-btn {
+    padding: 0.7rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: #10b981;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.submit-btn:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+    .dashboard-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .users-table th, .users-table td {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    .add-user-btn, .edit-manager-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+}

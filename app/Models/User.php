@@ -24,6 +24,8 @@ class User extends Authenticatable
         'verification',
         'profile_complete',
         'company_id',
+        'sector_id',
+        'role_id'
     ];
 
     protected $hidden = [
@@ -57,9 +59,13 @@ class User extends Authenticatable
         return $this->hasOne(Company::class, 'creator_id', 'user_id');
     }
 
-    // In User.php
     public function role() {
         return $this->belongsTo(Role::class, 'role_id', 'role_id');
+    }
+
+    public function sector()
+    {
+        return $this->belongsTo(Sector::class, 'sector_id');
     }
 
 }

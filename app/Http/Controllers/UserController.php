@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
 
+
 class UserController extends Controller
 {
     public function showProfileImage($filename)

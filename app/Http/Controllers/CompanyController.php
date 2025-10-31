@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invitation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -74,11 +75,6 @@ class CompanyController extends Controller
     {
         $user = Auth::user();
 
-        // Ensure the user is authenticated
-        if ($request->query()) {
-            return redirect()->route('company.dashboard');
-        }
-
         if (!$user) {
             return redirect()->route('login')
                 ->with('error', 'You must be logged in to access the dashboard.');
@@ -97,6 +93,35 @@ class CompanyController extends Controller
         }
 
         return view('users.Maindashboard', compact('user', 'company'));
+    }
+
+    // 🔹 Join a company via invite code
+    public function joinCompany(Request $request)
+    {
+        $request->validate([
+            'invite_code' => 'required|string|exists:invitations,invite_token',
+        ]);
+
+        $invite = Invitation::where('invite_token', $request->invite_code)
+            ->where('status', 'pending')
+            ->first();
+
+        if (!$invite) {
+            return response()->json([
+                'message' => 'Invalid or already used invite code.'
+            ], 422);
         }
 
+        $user = Auth::user();
+        $user->company_id = $invite->company_id;
+        $user->role_id = $invite->role_id;
+        $user->save();
+
+        $invite->update(['status' => 'approved']);
+
+        return response()->json([
+            'message' => 'Successfully joined the company!',
+            'redirect' => route('users.dashboard'),
+        ]);
+    }
 }

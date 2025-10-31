@@ -33,7 +33,8 @@
                 <!-- First Name -->
                 <div class="input-box @error('firstname') has-error @enderror">
                     <label for="firstname">First Name</label>
-                    <input type="text" id="firstname" name="firstname" placeholder="Enter your first name" value="{{ old('firstname') }}" required>
+                    <input type="text" id="firstname" name="firstname" placeholder="Enter your first name" value="{{ old('firstname') }}" 
+                    autocomplete="off" required>
                     <i class='bx bxs-user'></i>
                     @error('firstname')<small class="error-text">{{ $message }}</small>@enderror
                 </div>
@@ -41,7 +42,8 @@
                 <!-- Last Name -->
                 <div class="input-box @error('lastname') has-error @enderror">
                     <label for="lastname">Last Name</label>
-                    <input type="text" id="lastname" name="lastname" placeholder="Enter your last name" value="{{ old('lastname') }}" required>
+                    <input type="text" id="lastname" name="lastname" placeholder="Enter your last name" value="{{ old('lastname') }}" 
+                    autocomplete="off" required>
                     <i class='bx bxs-user'></i>
                     @error('lastname')<small class="error-text">{{ $message }}</small>@enderror
                 </div>
@@ -49,7 +51,8 @@
                 <!-- Contact -->
                 <div class="input-box @error('contact') has-error @enderror">
                     <label for="contact">Contact</label>
-                    <input type="text" id="contact" name="contact" placeholder="Enter your contact number" value="{{ old('contact') }}" required>
+                    <input type="text" id="contact" name="contact" placeholder="Enter your contact number" value="{{ old('contact') }}" 
+                    autocomplete="off" required>
                     <i class='bx bx-phone'></i>
                     @error('contact')<small class="error-text">{{ $message }}</small>@enderror
                 </div>
@@ -65,7 +68,8 @@
                 <!-- Verification Code -->
                 <div class="input-box @error('verification_code') has-error @enderror">
                     <label for="verification_code">Verification Code</label>
-                    <input type="text" id="verification_code" name="verification_code" placeholder="Enter the code sent to your email" value="{{ old('verification_code') }}" required>
+                    <input type="text" id="verification_code" name="verification_code" placeholder="Enter the code sent to your email" value="{{ old('verification_code') }}" 
+                    autocomplete="off" required>
                     <i class='bx bx-key'></i>
                     @error('verification_code')<small class="error-text">{{ $message }}</small>@enderror
                 </div>

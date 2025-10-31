@@ -32,6 +32,7 @@
                         name="username_login" 
                         value="{{ old('username_login') }}" 
                         placeholder="Enter your username" 
+                        autocomplete="off"
                         required
                     >
                     <i class='bx bxs-user'></i>

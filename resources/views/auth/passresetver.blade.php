@@ -26,7 +26,8 @@
 
             <div class="input-box @error('email') has-error @enderror">
                 <label for="email">Email</label>
-                <input type="email" name="email" id="email" placeholder="Enter your email" value="{{ old('email') }}" required>
+                <input type="email" name="email" id="email" placeholder="Enter your email" value="{{ old('email') }}" 
+                autocomplete="off" required>
                 <i class='bx bx-envelope'></i>
                 @error('email')<small class="error-text">{{ $message }}</small>@enderror
             </div>

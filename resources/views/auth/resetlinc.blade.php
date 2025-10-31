@@ -30,7 +30,8 @@
             <!-- Email -->
             <div class="input-box @error('email') has-error @enderror">
                 <label for="email">Email</label>
-                <input type="email" name="email" id="email" value="{{ old('email', $request->email ?? '') }}" required>
+                <input type="email" name="email" id="email" value="{{ old('email', $request->email ?? '') }}" 
+                autocomplete="off" required>
                 <i class='bx bx-envelope'></i>
                 @error('email')<small class="error-text">{{ $message }}</small>@enderror
             </div>
