@@ -85,7 +85,7 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::prefix('orders')->name('orders.')->group(function () {
             Route::get('/', [OrderController::class, 'index'])->name('index'); // List all orders
             Route::get('/create/{itemType}/{itemId}', [OrderController::class, 'create'])->name('create');
-            Route::post('/{id}/update-status', [OrderController::class, 'updateStatus'])->name('users.orders.updateStatus');
+            Route::post('/{id}/update-status', [OrderController::class, 'updateStatus'])->name('updateStatus');
             Route::post('/store', [OrderController::class, 'store'])->name('store');
         });
 
