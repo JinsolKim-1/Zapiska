@@ -107,41 +107,61 @@ class OrderController extends Controller
 
         return redirect()->route('users.orders.index')->with('success', 'Order placed successfully!');
     }
+
     public function updateStatus(Request $request, $id)
     {
         $order = Order::findOrFail($id);
-        $order->order_status = $request->status;
 
-        // If delivered, capture time and add to Assets/Inventory
-        if ($request->status === 'delivered') {
+        // Validate input
+        $request->validate([
+            'order_status' => 'required|string|in:pending,approved,delivered',
+        ]);
+
+        $oldStatus = $order->order_status;
+        $newStatus = $request->order_status;
+
+        // Update order status
+        $order->order_status = $newStatus;
+
+        // Handle delivered state
+        if ($newStatus === 'delivered') {
             $order->delivered_at = now();
             $order->save();
 
-            // Automatically insert into assets or inventory
-            if ($order->asset_request && $order->asset_request->request_type === 'asset') {
-                Asset::create([
-                    'company_id' => $order->asset_request->company_id,
-                    'user_id' => $order->asset_request->user_id,
-                    'asset_description' => $order->item_name,
-                    'purchase_date' => now(),
-                    'purchase_cost' => $order->unit_cost,
-                    'location' => 'Warehouse',
-                    'asset_status' => 'available'
-                ]);
-            } else {
-                Inventory::create([
-                    'company_id' => $order->asset_request->company_id,
-                    'item_name' => $order->item_name,
-                    'quantity' => $order->quantity,
-                    'unit_price' => $order->unit_cost,
-                    'added_on' => now()
-                ]);
+            // Check if there's an associated asset request
+            if ($order->asset_request) {
+                if ($order->asset_request->request_type === 'asset') {
+                    Asset::create([
+                        'company_id' => $order->asset_request->company_id,
+                        'user_id' => $order->asset_request->user_id,
+                        'asset_description' => $order->item_name,
+                        'purchase_date' => now(),
+                        'purchase_cost' => $order->unit_cost,
+                        'location' => 'Warehouse',
+                        'asset_status' => 'available'
+                    ]);
+                } else {
+                    Inventory::create([
+                        'company_id' => $order->asset_request->company_id,
+                        'item_name' => $order->item_name,
+                        'quantity' => $order->quantity,
+                        'unit_price' => $order->unit_cost,
+                        'added_on' => now()
+                    ]);
+                }
             }
         } else {
+            // Reset delivered_at if reverting back
+            if ($oldStatus === 'delivered' && $newStatus !== 'delivered') {
+                $order->delivered_at = null;
+            }
             $order->save();
         }
 
-        return response()->json(['message' => 'Order status updated successfully.']);
+        return response()->json([
+            'success' => true,
+            'message' => "Order #{$order->orders_id} status updated to '{$newStatus}'.",
+            'delivered_at' => $order->delivered_at ? $order->delivered_at->format('Y-m-d H:i:s') : null
+        ]);
     }
-
 }
