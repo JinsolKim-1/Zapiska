@@ -114,7 +114,7 @@ class OrderController extends Controller
 
         // Validate input
         $request->validate([
-            'order_status' => 'required|string|in:pending,approved,delivered',
+            'order_status' => 'required|string|in:pending,shipped,delivered,cancelled',
         ]);
 
         $oldStatus = $order->order_status;

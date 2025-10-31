@@ -127,7 +127,7 @@
             <td>{{ number_format($order->unit_cost, 2) }}</td>
             <td>{{ number_format($order->total_cost, 2) }}</td>
             <td>
-                <select class="order-status-dropdown">
+                <select class="order-status-dropdown" data-status="{{ $order->order_status }}">
                     <option value="pending" {{ $order->order_status == 'pending' ? 'selected' : '' }}>Pending</option>
                     <option value="shipped" {{ $order->order_status == 'shipped' ? 'selected' : '' }}>Shipped</option>
                     <option value="delivered" {{ $order->order_status == 'delivered' ? 'selected' : '' }}>Delivered</option>

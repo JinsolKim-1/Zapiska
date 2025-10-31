@@ -76,14 +76,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+function setDropdownColor(select) {
+    const status = select.value;
+    select.classList.remove('pending', 'shipped', 'delivered', 'cancelled');
+    select.classList.add(status);
+}
+
+    // Function to set dropdown color
+    function setDropdownColor(select) {
+        const status = select.value;
+        select.classList.remove('pending', 'shipped', 'delivered', 'cancelled');
+        select.classList.add(status);
+    }
+
+    // Function to set entire row color
+    function setRowColor(tr, status) {
+        tr.classList.remove('pending', 'shipped', 'delivered', 'cancelled');
+        tr.classList.add(status);
+    }
+
     /* ================================
-    3. ORDER STATUS UPDATE (AJAX)
-    ================================ */
+    ORDER STATUS UPDATE (AJAX)
+    =============================== */
     document.querySelectorAll('.order-status-dropdown').forEach(select => {
+        const tr = select.closest('tr');
+        
+        // Initialize dropdown and row color on page load
+        setDropdownColor(select);
+        setRowColor(tr, select.value);
+
         select.addEventListener('change', async () => {
-            const tr = select.closest('tr');           
             const orderId = tr.dataset.orderId;
-            const url = `/users/orders/${orderId}/update-status`; // or tr.dataset.updateUrl
+            const url = `/users/orders/${orderId}/update-status`;
             const newStatus = select.value;
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             const deliveredCell = tr.querySelector('.delivered-date-cell');
@@ -98,14 +122,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify({ order_status: newStatus }) 
                 });
 
-                const data = await response.json();
+                let data;
+                try {
+                    data = await response.json();
+                } catch (jsonErr) {
+                    console.error('Failed to parse JSON:', jsonErr);
+                    data = {};
+                }
 
                 if (response.ok) {
-                    // Update Delivered Date / Status Cell dynamically
+                    // Update colors
+                    setDropdownColor(select);
+                    setRowColor(tr, newStatus);
+
+                    // Update delivered/shipped/cancelled cell
                     switch(newStatus) {
                         case 'delivered':
-                            const now = new Date();
-                            deliveredCell.textContent = now.toLocaleString();
+                            deliveredCell.textContent = new Date().toLocaleString();
                             break;
                         case 'shipped':
                             deliveredCell.textContent = 'Package on the way';
@@ -113,12 +146,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         case 'cancelled':
                             deliveredCell.textContent = 'Cancelled';
                             break;
-                        default: // pending
+                        default:
                             deliveredCell.textContent = 'Not Delivered';
                             break;
-                        }
-                            alert(`✅ Order status updated to ${newStatus}`);
-                    } else {
+                    }
+
+                    alert(`✅ Order status updated to "${newStatus}"`);
+                } else {
                     alert('⚠️ ' + (data.message || 'Failed to update order status.'));
                 }
             } catch (err) {
@@ -127,4 +161,5 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
 });
