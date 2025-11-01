@@ -18,6 +18,7 @@ use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\ManagerUserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\VendorController;
+use App\Http\Controllers\BudgetController;
 
 // 🔹 HOME
 Route::get('/', fn() => view('home'))->name('home');
@@ -73,36 +74,51 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
     // 🔹 ADMIN / USERS DASHBOARD
     // ==========================
     Route::middleware(['auth','company.member'])->prefix('users')->name('users.')->group(function () {
+        
+        // Dashboard & other pages...
         Route::get('/dashboard', function () {
             return view('users.Maindashboard');
         })->name('dashboard');
 
         Route::get('/departments', [AdminController::class, 'departments'])->name('departments');
+        Route::post('/departments/{sector}/budget', [BudgetController::class, 'updateBudget'])->name('departments.updateBudget');
+        // Assets routes
         Route::get('/assets/order-form', [AssetController::class, 'showOrderForm'])->name('orders.form');
         Route::get('/assets', [AssetController::class, 'assets'])->name('assets');
         Route::post('/assets/add-category', [AssetController::class, 'addCategory'])->name('assets.addCategory');
 
+        // ✅ Sector assignment (admin only)
+        Route::post('/assets/{asset}/update-sector', [AssetController::class, 'updateSector'])
+            ->name('assets.updateSector');
+
+        // ✅ Status update (admin only)
+        Route::post('/assets/{asset}/update-status', [AssetController::class, 'updateStatus'])
+            ->name('assets.updateStatus');
+
+        // Orders routes
         Route::prefix('orders')->name('orders.')->group(function () {
-            Route::get('/', [OrderController::class, 'index'])->name('index'); // List all orders
+            Route::get('/', [OrderController::class, 'index'])->name('index'); 
             Route::get('/create/{itemType}/{itemId}', [OrderController::class, 'create'])->name('create');
             Route::post('/{id}/update-status', [OrderController::class, 'updateStatus'])->name('updateStatus');
             Route::post('/store', [OrderController::class, 'store'])->name('store');
         });
 
+        // Vendors
         Route::post('/vendors', [VendorController::class, 'store'])->name('vendors.store');
 
-        // Inventory routes
-    Route::prefix('inventory')->name('inventory.')->group(function() {
-        Route::get('/', [InventoryController::class, 'index'])->name('index');             
-        Route::get('/create', [InventoryController::class, 'create'])->name('create');      
-        Route::post('/', [InventoryController::class, 'store'])->name('store');            
-        Route::put('/{id}', [InventoryController::class, 'update'])->name('update');       
-        Route::put('/{id}/restock', [InventoryController::class, 'restock'])->name('restock');
-        Route::post('/{id}/assign', [InventoryController::class, 'assign'])->name('assign');   
-        Route::post('/{id}/withdraw', [InventoryController::class, 'withdraw'])->name('withdraw'); 
-        Route::delete('/{id}', [InventoryController::class, 'destroy'])->name('destroy');  
-    });
+        // Inventory routes...
+        Route::prefix('inventory')->name('inventory.')->group(function() {
+            Route::get('/', [InventoryController::class, 'index'])->name('index');             
+            Route::get('/create', [InventoryController::class, 'create'])->name('create');      
+            Route::post('/', [InventoryController::class, 'store'])->name('store');            
+            Route::put('/{id}', [InventoryController::class, 'update'])->name('update');       
+            Route::put('/{id}/restock', [InventoryController::class, 'restock'])->name('restock');
+            Route::post('/{id}/assign', [InventoryController::class, 'assign'])->name('assign');   
+            Route::post('/{id}/withdraw', [InventoryController::class, 'withdraw'])->name('withdraw'); 
+            Route::delete('/{id}', [InventoryController::class, 'destroy'])->name('destroy');  
+        });
 
+        // Other admin pages...
         Route::get('/requests', [AdminController::class, 'requests'])->name('requests');
         Route::get('/receipts', [AdminController::class, 'receipts'])->name('receipts');
         Route::get('/users', [AdminController::class, 'users'])->name('users');

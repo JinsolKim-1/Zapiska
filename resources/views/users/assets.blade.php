@@ -82,7 +82,7 @@
                                         <td>{{ $asset->category->category_name ?? 'N/A' }}</td>
                                         <td>{{ $asset->asset_description }}</td>
                                         <td>{{ $asset->purchase_date ? $asset->purchase_date->format('Y-m-d') : 'N/A' }}</td>
-                                        <td>{{ $asset->purchase_cost ? number_format($asset->purchase_cost, 2) : '0.00' }}</td>
+                                        <td>$ {{ $asset->purchase_cost ? number_format($asset->purchase_cost, 2) : '0.00' }}</td>
                                         <td>{{ $asset->location ?? 'N/A' }}</td>
                                         <td>{{ ucfirst($asset->asset_status) }}</td>
                                     </tr>

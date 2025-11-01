@@ -34,6 +34,15 @@
                 <option value="inventory">Inventory</option>
             </select>
 
+            <!-- Category (Dropdown) -->
+            <label for="categoryId">Category</label>
+            <select id="categoryId" name="asset_category_id" required>
+                <option value="">Select category</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->asset_category_id }}">{{ $category->category_name }}</option>
+                @endforeach
+            </select>
+
             <!-- Item Name (Manual Input) -->
             <label for="itemName">Item Name</label>
             <input type="text" id="itemName" name="item_name" placeholder="Enter item"  autocomplete="off" required>
@@ -50,8 +59,8 @@
             <!-- Vendor + Add Vendor -->
             <label for="vendorId">Vendor</label>
             <div class="vendor-container">
-                <select id="vendorId" name="vendor_id" required>
-                    <option value="">Select vendor</option>
+                <select name="vendor_id" id="vendor_id" class="form-control">
+                    <option value="">Select Supplier</option>
                     @foreach($vendors as $vendor)
                         <option value="{{ $vendor->vendor_id }}">{{ $vendor->vendor_name }}</option>
                     @endforeach
@@ -79,7 +88,7 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h3>Add New Vendor</h3>
-                <form id="addVendorForm">
+                <form id="addVendorForm" data-store-url="{{ route('users.vendors.store') }}">
                     @csrf
                     <label for="vendor_name">Vendor Name</label>
                     <input type="text" name="vendor_name" id="vendor_name" required>
@@ -107,6 +116,7 @@
         <thead>
         <tr>
             <th>Item</th>
+            <th>Category</th>
             <th>Type</th>
             <th>Vendor</th>
             <th>Quantity</th>
@@ -119,15 +129,16 @@
         </thead>
         <tbody>
         @foreach($orders as $order)
-        <tr data-order-id="{{ $order->orders_id }}">
+        <tr data-order-id="{{ $order->orders_id }}" data-type="{{ $order->item_type ?? 'asset' }}">
             <td>{{ $order->item_name ?? 'N/A' }}</td>
+            <td>{{ $order->category->category_name ?? 'N/A' }}</td>
             <td>{{ $order->item_type ?? 'N/A' }}</td>
             <td>{{ $order->vendor->vendor_name ?? 'N/A' }}</td>
             <td>{{ $order->quantity }}</td>
-            <td>{{ number_format($order->unit_cost, 2) }}</td>
-            <td>{{ number_format($order->total_cost, 2) }}</td>
+            <td>$ {{ number_format($order->unit_cost, 2) }}</td>
+            <td>$ {{ number_format($order->total_cost, 2) }}</td>
             <td>
-                <select class="order-status-dropdown">
+                <select class="order-status-dropdown" data-order-id="{{ $order->orders_id }}">
                     <option value="pending" {{ $order->order_status == 'pending' ? 'selected' : '' }}>Pending</option>
                     <option value="shipped" {{ $order->order_status == 'shipped' ? 'selected' : '' }}>Shipped</option>
                     <option value="delivered" {{ $order->order_status == 'delivered' ? 'selected' : '' }}>Delivered</option>

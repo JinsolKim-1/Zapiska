@@ -9,7 +9,7 @@ class Inventory extends Model
 {
     use HasFactory;
 
-    protected $table = 'inventory'; // <- specify the table name
+    protected $table = 'inventory'; 
 
     protected $primaryKey = 'inventory_id';
 
