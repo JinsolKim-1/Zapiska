@@ -13,36 +13,54 @@ use App\Models\Order;
 
 class AssetController extends Controller
 {
-    // All assets view (role-based)
     public function assets()
     {
         $user = Auth::user();
         $companyId = $user->company_id;
 
-        if ($user->role->category === 'admin') {
-            // Admin sees all assets
-            $assets = Asset::with(['category'])->where('company_id', $companyId)->get();
-            $view = 'users.assets.admin-assets';
-        } else {
-            // Manager & Employee see assets via DepartmentAsset
-            $query = DepartmentAsset::with('asset')->where('company_id', $companyId);
-
-            if ($user->role->category === 'manager') {
-                // Manager sees assets in their sector
-                $query->where('sector_id', $user->sector_id);
-            } else {
-                // Employee sees assets assigned to them
-                $query->where('assigned_by', $user->user_id);
-            }
-
-            $assets = $query->get();
-            $view = 'users.assets.manager-employee-assets';
-        }
-
+        // Fetch all asset categories
         $categories = AssetCategory::where('company_id', $companyId)->get();
 
-        return view($view, compact('assets', 'categories'));
+        // Fetch all assets (admins see all)
+        $assets = Asset::with(['category', 'sector', 'user'])
+            ->where('company_id', $companyId)
+            ->get();
+
+        // Fetch sectors for assigning (if needed in admin-assets view)
+        $sectors = \App\Models\Sector::where('company_id', $companyId)->get();
+
+        return view('users.assets.admin-assets', compact('assets', 'categories', 'sectors'));
     }
+
+    /**
+     * Optional: Show order form
+     */
+    public function orderForm(Request $request)
+    {
+        $user = Auth::user();
+
+        // Optional preselected inventory item
+        $inventoryItem = null;
+        if ($request->has('inventory_id')) {
+            $inventoryItem = Inventory::find($request->inventory_id);
+        }
+
+        // Get all vendors, assets, and inventory items
+        $vendors = Vendor::where('company_id', $user->company_id)->get();
+        $assets = Asset::where('company_id', $user->company_id)->get();
+        $inventory = Inventory::where('company_id', $user->company_id)->get();
+        $requests = Order::with(['vendor', 'category'])
+                    ->where('company_id', $user->company_id)
+                    ->orderBy('order_date', 'desc')
+                    ->get();
+
+        $categories = AssetCategory::where('company_id', $user->company_id)->get();
+
+        return view('users.assets.orderForm', compact(
+            'inventoryItem', 'vendors', 'assets', 'inventory', 'requests', 'categories'
+        ));
+    }
+
 
     // Add new category
     public function addCategory(Request $request)
@@ -115,15 +133,60 @@ class AssetController extends Controller
         $inventories = Inventory::where('company_id', $user->company_id)->get();
         $vendors = Vendor::where('company_id', $user->company_id)->get();
 
+        $categories = AssetCategory::where('company_id', $user->company_id)->get();
         // Orders can still be filtered by the user if needed
-        $orders = Order::with('vendor')
+        $orders = Order::with('vendor','category')
                     ->where('company_id', $user->company_id) // optional
                     ->orderBy('order_date', 'desc')
                     ->get();
 
         $selectedInventoryId = $request->query('inventory_id');
 
-        return view('users.assets.orderForm', compact('assets', 'inventories', 'vendors', 'orders', 'selectedInventoryId'));
+        return view('users.assets.orderForm', compact('assets', 'inventories', 'vendors', 'orders','categories', 'selectedInventoryId'));
     }
 
+    public function updateSector(Request $request, Asset $asset)
+    {
+        $request->validate([
+            'sector_id' => 'required|exists:sectors,sector_id',
+        ]);
+
+        $asset->update([
+            'sector_id' => $request->sector_id
+        ]);
+
+        return redirect()->back()->with('success', 'Asset sector updated!');
+    }
+
+    public function updateStatus(Request $request, Asset $asset)
+    {
+        // Validate using asset_status
+        $request->validate([
+            'asset_status' => 'required|in:available,in_use,maintenance,disposed',
+            'sector_id'    => 'sometimes|nullable|exists:sectors,sector_id'
+        ]);
+
+        // If a sector is being assigned, update it
+        if ($request->has('sector_id') && $request->sector_id) {
+            $asset->sector_id = $request->sector_id;
+
+            // If current status is 'available', auto-set to 'in_use'
+            if ($asset->asset_status === 'available') {
+                $asset->asset_status = 'in_use';
+            }
+        }
+
+        // If JS sends asset_status, update it
+        if ($request->has('asset_status')) {
+            $asset->asset_status = $request->asset_status;
+        }
+
+        $asset->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Asset updated successfully.',
+            'asset_status' => $asset->asset_status
+        ]);
+    }
 }

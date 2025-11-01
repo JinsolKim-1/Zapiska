@@ -12,7 +12,7 @@ export default defineConfig({
                 ,'resources/css/departments.css','resources/css/assets.css','resources/css/requests.css','resources/css/receipts.css'
                 ,'resources/css/users.css','resources/css/sectorUsers.css','resources/css/addUser.css','resources/css/invite.css'
                 ,'resources/css/inventory.css','resources/css/manager-requests.css','resources/css/manager-assets.css','resources/css/employee-requests.css'
-                ,'resources/js/orderForm.js'],
+                ,'resources/js/orderForm.js','resources/js/inventory.js','resources/js/admin-assets.js'],
             refresh: true,
         }),
     ],

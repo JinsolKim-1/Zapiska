@@ -20,8 +20,9 @@ class Asset extends Model
         'asset_description',
         'purchase_date',
         'purchase_cost',
-        'location',
         'asset_status',
+        'sector_id',
+        'order_id'
     ];
 
     public function company()
@@ -42,5 +43,14 @@ class Asset extends Model
     public function sector()
     {
         return $this->belongsTo(Sector::class, 'sector_id');
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id', 'orders_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

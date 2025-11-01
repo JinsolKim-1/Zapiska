@@ -99,7 +99,7 @@
     new Chart(document.getElementById('overallApprovedChart'), {
       type: 'bar',
       data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June','July','Aug','Sept','Nov','Dec'],
         datasets: [{
           label: 'Approved Requests',
           data: [12, 19, 7, 14, 10],
@@ -118,7 +118,7 @@
     new Chart(document.getElementById('overallRequestsChart'), {
       type: 'line',
       data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June','July','Aug','Sept','Nov','Dec'],
         datasets: [{
           label: 'Requests',
           data: [5, 15, 10, 20, 18],

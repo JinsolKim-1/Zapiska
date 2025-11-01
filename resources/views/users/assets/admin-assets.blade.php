@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assets | Zapiska</title>
-    @vite(['resources/css/assets.css'])
+    @vite(['resources/css/assets.css','resources/js/admin-assets.js'])
 </head>
 <body>
     <div class="layout">
@@ -40,8 +41,6 @@
                 <!-- Table Row -->
                 <div class="card wide">
                     <h3>Asset Summary</h3>
-
-                    <!-- Search & Filter & Buttons -->
                     <div class="table-controls">
                         <input type="text" id="searchInput" placeholder="Search assets...">
                         <select id="categoryFilter">
@@ -58,8 +57,6 @@
                         <a href="{{ route('users.orders.form') }}" class="order-form-btn">+ Order Form</a>
                     </div>
 
-
-                    <!-- Table -->
                     <div class="table-wrapper">
                         <table id="assetsTable">
                             <thead>
@@ -75,16 +72,47 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $statuses = ['available', 'in_use', 'maintenance', 'disposed'];
+                                @endphp
                                 @foreach($assets as $asset)
                                     <tr>
                                         <td>{{ $asset->asset_id }}</td>
                                         <td>{{ $asset->user->username ?? 'N/A' }}</td>
                                         <td>{{ $asset->category->category_name ?? 'N/A' }}</td>
                                         <td>{{ $asset->asset_description }}</td>
-                                        <td>{{ $asset->purchase_date ? $asset->purchase_date->format('Y-m-d') : 'N/A' }}</td>
-                                        <td>{{ $asset->purchase_cost ? number_format($asset->purchase_cost, 2) : '0.00' }}</td>
-                                        <td>{{ $asset->location ?? 'N/A' }}</td>
-                                        <td>{{ ucfirst($asset->asset_status) }}</td>
+                                        <td>{{ $asset->purchase_date ? \Carbon\Carbon::parse($asset->purchase_date)->format('Y-m-d') : 'N/A' }}</td>
+                                        <td>$ {{ $asset->purchase_cost ? number_format($asset->purchase_cost, 2) : '0.00' }}</td>
+                                        <td>
+                                            @if(Auth::user()->role && Auth::user()->role->category === 'admin')
+                                                <select class="styled-dropdown sector-dropdown" data-asset-id="{{ $asset->asset_id }}">
+                                                    <option value="">Select Location</option>
+                                                    @foreach($sectors as $sector)
+                                                        <option value="{{ $sector->sector_id }}"
+                                                            {{ $asset->sector_id == $sector->sector_id ? 'selected' : '' }}>
+                                                            {{ $sector->department_name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            @else
+                                                {{ $asset->sector->department_name ?? 'N/A' }}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if(Auth::user()->role && Auth::user()->role->category === 'admin')
+                                                <select class="styled-dropdown status-dropdown" data-asset-id="{{ $asset->asset_id }}">
+                                                    @foreach($statuses as $status)
+                                                        <option value="{{ $status }}" {{ $asset->asset_status === $status ? 'selected' : '' }}>
+                                                            {{ ucfirst(str_replace('_',' ',$status)) }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            @else
+                                                <span class="status-badge {{ $asset->asset_status }}">
+                                                    {{ ucfirst(str_replace('_',' ',$asset->asset_status)) }}
+                                                </span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -105,37 +133,8 @@
             <button type="button" id="cancelCategoryBtn">Cancel</button>
         </form>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const searchInput = document.getElementById('searchInput');
-        const categoryFilter = document.getElementById('categoryFilter');
-        const table = document.getElementById('assetsTable');
-        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-        function filterTable() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const categoryTerm = categoryFilter.value.toLowerCase();
-
-            for (let row of rows) {
-                const cells = row.getElementsByTagName('td');
-                const matchesSearch = Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(searchTerm));
-                const matchesCategory = categoryTerm === '' || cells[2].textContent.toLowerCase() === categoryTerm;
-                row.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
-            }
-        }
-
-        searchInput.addEventListener('keyup', filterTable);
-        categoryFilter.addEventListener('change', filterTable);
-
-        const addBtn = document.getElementById('addCategoryBtn');
-        const modal = document.getElementById('addCategoryModal');
-        const cancelBtn = document.getElementById('cancelCategoryBtn');
-
-        if (addBtn) {
-            addBtn.addEventListener('click', () => modal.classList.add('show'));
-            cancelBtn.addEventListener('click', () => modal.classList.remove('show'));
-        }
-    </script>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </html>

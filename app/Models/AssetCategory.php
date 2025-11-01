@@ -11,7 +11,7 @@ class AssetCategory extends Model
 
     protected $table = 'asset_categories';
     protected $primaryKey = 'asset_category_id';
-    public $timestamps = false; // since you use asset_created_at manually
+    public $timestamps = false;
 
     protected $fillable = [
         'company_id',

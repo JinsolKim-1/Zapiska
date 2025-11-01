@@ -23,7 +23,7 @@
             </header>
 
             <section class="dashboard-grid assets-grid">
-                <!-- ✅ Charts Row (Removed Requester Distribution) -->
+                <!-- Charts -->
                 <div class="card">
                     <h3>Asset Categories</h3>
                     <canvas id="categoriesPieChart"></canvas>
@@ -33,11 +33,10 @@
                     <canvas id="costRangePieChart"></canvas>
                 </div>
 
-                <!-- Table Row -->
+                <!-- Table -->
                 <div class="card wide">
                     <h3>Asset Summary</h3>
 
-                    <!-- Search & Filter -->
                     <div class="table-controls">
                         <input type="text" id="searchInput" placeholder="Search assets...">
                         <select id="categoryFilter">
@@ -47,20 +46,18 @@
                             @endforeach
                         </select>
 
-                        @if(Auth::user()->role && Auth::user()->role->category === 'manager')
+                        @if(Auth::user()->role->category === 'manager')
                             <a href="#" class="order-form-btn">+ Order Form</a>
-                        @elseif(Auth::user()->role && Auth::user()->role->category === 'employee')
+                        @elseif(Auth::user()->role->category === 'employee')
                             <a href="#" class="order-form-btn">+ My Request</a>
                         @endif
                     </div>
 
-                    <!-- Table -->
                     <div class="table-wrapper">
                         <table id="assetsTable">
                             <thead>
                                 <tr>
                                     <th>Asset ID</th>
-                                    <th>Assigned User</th>
                                     <th>Category</th>
                                     <th>Description</th>
                                     <th>Purchase Date</th>
@@ -70,20 +67,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($assets as $deptAsset)
-                                <tr>
-                                    <td>{{ $deptAsset->asset->asset_name ?? 'N/A' }}</td>
-                                    <td>{{ $deptAsset->assigned_quantity }}</td>
-                                    <td>{{ $deptAsset->assigned_at }}</td>
-                                    <td>{{ ucfirst($deptAsset->status) }}</td>
-                                    <td>{{ $deptAsset->asset->purchase_cost ?? '₱0' }}</td>
-                                    <td>
-                                        @if(Auth::user()->role->category === 'manager')
-                                            <button class="approve-btn">Approve</button>
-                                            <button class="reject-btn">Reject</button>
-                                        @endif
-                                    </td>
-                                </tr>
+                                @foreach($assets as $asset)
+                                    <tr>
+                                        <td>{{ $asset->asset_id }}</td>
+                                        <td>{{ $asset->category->category_name ?? 'N/A' }}</td>
+                                        <td>{{ $asset->asset_description }}</td>
+                                        <td>{{ $asset->purchase_date ? \Carbon\Carbon::parse($asset->purchase_date)->format('Y-m-d') : 'N/A' }}</td>
+                                        <td>₱{{ number_format($asset->purchase_cost ?? 0, 2) }}</td>
+                                        <td>{{ $asset->sector->department_name ?? 'N/A' }}</td>
+                                        <td>{{ ucfirst($asset->asset_status) }}</td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -95,35 +88,25 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Search & Filter
         const searchInput = document.getElementById('searchInput');
         const categoryFilter = document.getElementById('categoryFilter');
         const table = document.getElementById('assetsTable');
-        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+        const rows = table.querySelectorAll('tbody tr');
 
         function filterTable() {
             const searchTerm = searchInput.value.toLowerCase();
             const categoryTerm = categoryFilter.value.toLowerCase();
 
-            for (let row of rows) {
-                const cells = row.getElementsByTagName('td');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
                 const matchesSearch = Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(searchTerm));
-                const matchesCategory = categoryTerm === '' || cells[2].textContent.toLowerCase() === categoryTerm;
+                const matchesCategory = categoryTerm === '' || cells[1].textContent.toLowerCase() === categoryTerm;
                 row.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
-            }
+            });
         }
 
         searchInput.addEventListener('keyup', filterTable);
         categoryFilter.addEventListener('change', filterTable);
-
-        const addBtn = document.getElementById('addCategoryBtn');
-        const modal = document.getElementById('addCategoryModal');
-        const cancelBtn = document.getElementById('cancelCategoryBtn');
-
-        if (addBtn) {
-            addBtn.addEventListener('click', () => modal.classList.add('show'));
-            cancelBtn.addEventListener('click', () => modal.classList.remove('show'));
-        }
     </script>
 </body>
 </html>

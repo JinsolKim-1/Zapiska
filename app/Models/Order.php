@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\AssetCategory;
 class Order extends Model
 {
     use HasFactory;
@@ -15,6 +15,7 @@ class Order extends Model
     protected $fillable = [
         'company_id',
         'vendor_id',
+        'asset_category_id',
         'requests_id',
         'created_by',
         'item_name',
@@ -44,5 +45,9 @@ class Order extends Model
     // Total cost accessor (already computed in DB, optional here)
     public function getTotalCostAttribute() {
         return $this->quantity * $this->unit_cost;
+    }
+
+    public function category() {
+        return $this->belongsTo(AssetCategory::class, 'asset_category_id', 'asset_category_id');
     }
 }
