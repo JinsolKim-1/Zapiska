@@ -9,26 +9,30 @@ use App\Models\User;
 
 class ManagerUserController extends Controller
 {
+    /**
+     * Show the manager's department and its employees.
+     * Route: GET /manager/users
+     */
     public function index()
     {
         $manager = Auth::user();
 
-        // Get the manager's sector
+        // Find the sector where this user is set as manager
         $sector = Sector::with(['users.role'])
             ->where('manager_id', $manager->user_id)
             ->first();
 
-        if (!$sector) {
+        // If no sector assigned, return view with null sector
+        if (! $sector) {
             return view('users.manager-users', [
                 'sector' => null,
                 'employees' => collect(),
             ]);
         }
 
-        // Get employees in that same sector
         $employees = User::with('role')
             ->where('sector_id', $sector->sector_id)
-            ->whereHas('role', fn($q) => $q->where('role_name', 'Employee'))
+            ->where('user_id', '!=', $manager->user_id)
             ->get();
 
         return view('users.manager-users', compact('sector', 'employees'));

@@ -82,6 +82,8 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 
         Route::get('/departments', [AdminController::class, 'departments'])->name('departments');
         Route::post('/departments/{sector}/budget', [BudgetController::class, 'updateBudget'])->name('departments.updateBudget');
+        Route::post('/departments/add-budget', [App\Http\Controllers\AdminController::class, 'addBudget'])->name('addBudget');
+
         // Assets routes
         Route::get('/assets/order-form', [AssetController::class, 'showOrderForm'])->name('orders.form');
         Route::get('/assets', [AssetController::class, 'assets'])->name('assets');
@@ -129,7 +131,7 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::post('/sector/{sector}/assign-user/{user}', [AdminController::class, 'assignUserToSector'])->name('assignUserToSector');
         Route::delete('/user/{user}', [AdminController::class, 'kickUser'])->name('kickUser'); 
         Route::get('/sector/{sector}/edit-manager', [AdminController::class, 'editManager'])->name('editManager'); 
-
+        Route::patch('/sector/{sector}/edit-manager', [AdminController::class, 'updateManager'])->name('updateManager');
         Route::get('/invite', [InvitationController::class, 'index'])->name('invite');
         Route::post('/invite/send', [InvitationController::class, 'sendInvite'])->name('sendInvite');
         Route::get('/invite/{token}', [InvitationController::class, 'acceptInvite'])->name('users.acceptInvite');
@@ -148,9 +150,11 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
             Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory');
             Route::post('/inventory/{id}/withdraw', [InventoryController::class, 'withdraw'])->name('inventory.withdraw');
             Route::get('/requests', [ManagerController::class, 'requests'])->name('requests');
-            Route::get('/assets', [AssetController::class, 'assets'])->name('assets');
+            Route::get('/assets', [ManagerController::class, 'assets'])->name('assets');
+            Route::post('/special-requests', [ManagerController::class, 'storeSpecialRequest'])
+                ->name('specialRequests.store');
             Route::get('/analytics', [ManagerController::class, 'analytics'])->name('analytics');
-            Route::get('/receipts', [ReceiptController::class, 'index'])->name('receipts');
+            Route::get('/receipts', [ManagerController::class, 'receipts'])->name('receipts');
             Route::get('/users', [ManagerUserController::class, 'index'])->name('users');
         });
 

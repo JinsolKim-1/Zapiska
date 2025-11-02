@@ -49,8 +49,14 @@ class Asset extends Model
     {
         return $this->belongsTo(Order::class, 'order_id', 'orders_id');
     }
+    
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function sectorBudget() {
+        return $this->belongsTo(SectorBudget::class, 'sector_id', 'sector_id');
+    }
+
 }
