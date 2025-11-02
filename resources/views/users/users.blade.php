@@ -41,21 +41,23 @@
         <section class="departments-grid" id="departmentsGrid">
             @foreach($sectors as $sector)
             <div class="department-card" data-sector="{{ $sector->sector_id }}">
-                <h3>{{ $sector->department_name }}</h3>
-
-                @if($sector->manager)
-                <div class="manager-info">
-                    <strong>Manager:</strong> {{ $sector->manager->username }}
+                <div class="sector-details">
+                    <p><strong>Sector Name:</strong><span class="sector-name">{{ $sector->department_name }}</span></p>
+                    <p><strong>Manager:</strong> {{ $sector->manager->username ?? 'N/A' }}</p>
+                    <p><strong>Created At:</strong> {{ $sector->created_at ? $sector->created_at->format('F d, Y') : 'N/A' }}</p>
+                    <p class="user-count">Users: {{ $sector->users->count() }} Members</p>
                 </div>
-                @endif
 
+                @if($sector->users->count() > 0)
                 <div class="users-list">
+                    <strong>Users:</strong>
                     @foreach($sector->users as $user)
-                    <div class="user-item">
-                        {{ $user->username }} ({{ $user->role->role_name ?? 'No role' }})
-                    </div>
+                        <div class="user-item">
+                            {{ $user->username }} ({{ $user->role->role_name ?? 'No role' }})
+                        </div>
                     @endforeach
                 </div>
+                @endif
 
                 <button class="add-user-btn" data-sector="{{ $sector->sector_id }}">+ Add User</button>
             </div>
@@ -116,7 +118,7 @@
 
             const cards = departmentsGrid.querySelectorAll('.department-card');
             cards.forEach(card => {
-                const name = card.querySelector('h3').textContent.toLowerCase();
+                const name = card.querySelector('.sector-name').textContent.toLowerCase();
                 const matchesFilter = filterValue === 'all' || card.dataset.sector === filterValue;
                 const matchesSearch = name.includes(searchValue);
 

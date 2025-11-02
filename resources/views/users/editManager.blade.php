@@ -15,7 +15,7 @@
         </header>
 
         <section class="form-section">
-            <form action="{{ route('users.editManager', $sector->sector_id) }}" method="POST">
+            <form action="{{ route('users.updateManager', $sector->sector_id) }}" method="POST">
                 @csrf
                 @method('PATCH')
 

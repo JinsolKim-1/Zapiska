@@ -26,6 +26,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    width: calc(100% - 250px);
 }
 
 /* ===== Dashboard Header ===== */
@@ -99,12 +100,10 @@ body {
 /* ===== Assets Grid ===== */
 .assets-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 equal-width charts */
-    grid-auto-rows: auto;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
 }
 
-/* ===== Cards ===== */
 .card {
     background: #ffffff;
     border-radius: 1rem;
@@ -115,7 +114,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    height: auto;
+    width: 100%;
 }
 
 .card:hover {
@@ -132,20 +131,11 @@ body {
     margin-bottom: 1rem;
 }
 
-/* ===== Charts ===== */
-canvas {
-    width: 100%;
-    height: 250px !important;
-    margin-top: 1rem;
+.card.wide {
+    grid-column: 1 / -1;
+    width: 100%;        
 }
 
-/* ===== Wide Table Card ===== */
-.card.wide {
-    grid-column: 1 / -1; /* span all 3 columns */
-    display: flex;
-    flex-direction: column;
-    height: auto;
-}
 
 /* ===== Table Styling ===== */
 .table-wrapper {
@@ -177,9 +167,7 @@ tbody tr:hover {
     background: #f9fafb;
 }
 
-/* ==========================
-   Table Controls: Search + Filter + Buttons
-=========================== */
+/* ===== Table Controls ===== */
 .table-controls {
     display: flex;
     flex-wrap: wrap;
@@ -188,163 +176,204 @@ tbody tr:hover {
     margin-bottom: 1rem;
 }
 
-.table-controls input[type="text"] {
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.5rem;
-    border: 1px solid #ccc;
-    flex: 1 1 200px;
-    font-size: 0.95rem;
-    transition: border 0.2s;
-}
-
-.table-controls input[type="text"]:focus {
-    outline: none;
-    border-color: #3b82f6; /* blue accent */
-    box-shadow: 0 0 4px rgba(59, 130, 246, 0.3);
-}
-
+.table-controls input[type="text"],
 .table-controls select {
     padding: 0.5rem 0.75rem;
     border-radius: 0.5rem;
     border: 1px solid #ccc;
     font-size: 0.95rem;
-    min-width: 150px;
     transition: border 0.2s;
 }
 
+.table-controls input[type="text"]:focus,
 .table-controls select:focus {
     outline: none;
-    border-color: #10b981; /* green accent */
+    border-color: #10b981;
     box-shadow: 0 0 4px rgba(16, 185, 129, 0.3);
 }
 
 .table-controls button,
-.table-controls .order-form-btn {
-    padding: 0.45rem 0.85rem;
+.table-controls .special-request-btn {
+    padding: 0.55rem 1rem;
     border-radius: 0.5rem;
     border: none;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.95rem;
     transition: background 0.2s, transform 0.1s;
-    font-size: 0.9rem;
 }
 
-/* Add Category Button */
-.table-controls #addCategoryBtn {
-    background-color: #3b82f6;
-    color: #fff;
-}
-
-.table-controls #addCategoryBtn:hover {
-    background-color: #2563eb;
-    transform: translateY(-1px);
-}
-
-/* Order Form Button */
-.table-controls .order-form-btn {
+/* Special Request Button */
+.table-controls .special-request-btn {
     background-color: #10b981;
     color: #fff;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-.table-controls .order-form-btn:hover {
+.table-controls .special-request-btn:hover {
     background-color: #059669;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 }
 
-/* ==========================
-   Add Category Modal
-=========================== */
-#addCategoryModal {
+/* ===== Elegant Modal ===== */
+#specialRequestModal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.55);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 999;
-
-    opacity: 0;             /* hidden by default */
-    pointer-events: none;   /* prevents interaction */
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
     transition: opacity 0.25s ease-in-out;
 }
 
-#addCategoryModal.show {
+#specialRequestModal.show {
     opacity: 1;
     pointer-events: all;
 }
 
-#addCategoryModal form {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 1rem;
-    width: 320px;
+#specialRequestModal .modal-content {
+    background: #ffffff;
+    border-radius: 1.25rem;
+    width: 450px;
     max-width: 90%;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    padding: 2.5rem 2rem;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-
+    gap: 1.5rem;
     transform: scale(0.95);
-    transition: all 0.25s ease-in-out;
+    transition: all 0.3s ease-in-out;
 }
 
-#addCategoryModal.show form {
+#specialRequestModal.show .modal-content {
     transform: scale(1);
 }
 
-/* Form Elements */
-#addCategoryModal label {
-    font-weight: 500;
-    font-size: 0.9rem;
+#specialRequestModal h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #064e3b;
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
-#addCategoryModal input[type="text"] {
-    padding: 0.5rem 0.75rem;
+/* Close Button */
+#specialRequestModal .close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.5rem;
+    color: #6b7280;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+#specialRequestModal .close:hover {
+    color: #111827;
+}
+
+/* Floating label form */
+#specialRequestModal .form-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+#specialRequestModal .form-group.floating input,
+#specialRequestModal .form-group.floating textarea {
+    padding: 0.75rem 0.75rem 0.25rem 0.75rem;
     border-radius: 0.5rem;
-    border: 1px solid #ccc;
-    font-size: 0.9rem;
+    border: 1px solid #d1d5db;
+    font-size: 0.95rem;
+    transition: border 0.2s, box-shadow 0.2s;
+    background: #f9fafb;
+    resize: none;
 }
 
-#addCategoryModal button {
-    padding: 0.5rem;
+#specialRequestModal .form-group.floating label {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    color: #6b7280;
+    pointer-events: none;
+    transition: all 0.2s ease-in-out;
+}
+
+#specialRequestModal .form-group.floating input:focus + label,
+#specialRequestModal .form-group.floating textarea:focus + label,
+#specialRequestModal .form-group.floating input:not(:placeholder-shown) + label,
+#specialRequestModal .form-group.floating textarea:not(:placeholder-shown) + label {
+    top: -0.5rem;
+    left: 0.65rem;
+    font-size: 0.75rem;
+    color: #10b981;
+    background: #ffffff;
+    padding: 0 0.25rem;
+}
+
+/* Modal Buttons */
+#specialRequestModal .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 2rem;
+}
+
+#specialRequestModal .btn-submit {
+    background: linear-gradient(90deg, #10b981, #059669);
+    color: #fff;
+    padding: 0.55rem 1rem;
     border-radius: 0.5rem;
     border: none;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 0.9rem;
-    transition: background 0.2s;
+    transition: all 0.2s;
 }
 
-#addCategoryModal button[type="submit"] {
-    background-color: #35b662;
-    color: #fff;
+#specialRequestModal .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16,185,129,0.35);
 }
 
-#addCategoryModal button[type="submit"]:hover {
-    background-color: #2563eb;
-}
-
-#addCategoryModal #cancelCategoryBtn {
+#specialRequestModal .btn-cancel {
     background-color: #ef4444;
     color: #fff;
+    padding: 0.55rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-#addCategoryModal #cancelCategoryBtn:hover {
+#specialRequestModal .btn-cancel:hover {
+    transform: translateY(-2px);
     background-color: #dc2626;
+    box-shadow: 0 8px 20px rgba(239,68,68,0.35);
+}
+
+
+/* ===== Charts ===== */
+.card canvas {
+    width: 100% !important;
+    height: 250px !important;
 }
 
 /* ===== Responsive ===== */
 @media (max-width: 1024px) {
     .assets-grid {
-        grid-template-columns: 1fr; /* stack charts vertically on mobile */
+        grid-template-columns: 1fr;
     }
+
     .card.wide {
         grid-column: span 1;
     }
