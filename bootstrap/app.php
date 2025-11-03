@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'prevent-back-history'=>\App\Http\Middleware\PreventBackHistory::class,
             'company.verified' => \App\Http\Middleware\EnsureCompanyVerified::class,
             'company.member' => \App\Http\Middleware\EnsureUserIsMember::class,
+            'superadmin.timeout' => \App\Http\Middleware\SuperadminSessionTimeout::class,
         ]);
 
     })

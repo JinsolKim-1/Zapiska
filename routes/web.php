@@ -178,13 +178,18 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 });
 
 
-// 🔹 SUPERADMIN ROUTES
 Route::prefix('superadmin')->group(function () {
-    Route::get('/login', [SuperAuthController::class, 'showLoginForm'])->name('superadmin.login');
-    Route::post('/login', [SuperAuthController::class, 'login'])->name('superadmin.login.post');
-    Route::post('/logout', [SuperAuthController::class, 'logout'])->name('superadmin.logout');
 
-    Route::middleware(['auth:superadmin', 'prevent-back-history'])->group(function () {
+    // Only guests can access login page
+    Route::middleware('guest:superadmin')->group(function () {
+        Route::get('/login', [SuperAuthController::class, 'showLoginForm'])->name('superadmin.login');
+        Route::post('/login', [SuperAuthController::class, 'login'])->name('superadmin.login.post');
+    });
+
+    // Authenticated superadmins only
+    Route::middleware(['auth:superadmin', 'prevent-back-history','superadmin.timeout'])->group(function () {
+        Route::post('/logout', [SuperAuthController::class, 'logout'])->name('superadmin.logout');
+
         Route::get('/dashboard', function () {
             $superadmin = Auth::guard('superadmin')->user();
             return view('superadmin.dashboard', compact('superadmin'));
@@ -195,14 +200,11 @@ Route::prefix('superadmin')->group(function () {
         Route::post('/users/store', [SuperUserController::class, 'store'])->name('superadmin.users.store');
         Route::post('/users/update/{id}', [SuperUserController::class, 'update'])->name('superadmin.users.update');
         Route::delete('/users/{id}', [SuperUserController::class, 'destroy'])->name('superadmin.users.destroy');
-        Route::post('/users/inventory/{id}/withdraw', [InventoryController::class, 'withdraw'])
-            ->name('users.inventory.withdraw');
-
-        Route::post('/request-edit/{id}', [SuperUserController::class, 'requestEdit'])->name('superadmin.requestEdit');
-        Route::get('/confirm-edit/{id}', [SuperUserController::class, 'confirmEdit'])->name('superadmin.confirmEdit');
 
         Route::get('/companies', [SuperCompanyController::class, 'index'])->name('superadmin.companies');
         Route::post('/companies/{id}/approve', [SuperCompanyController::class, 'approve'])->name('superadmin.companies.approve');
         Route::post('/companies/{id}/reject', [SuperCompanyController::class, 'reject'])->name('superadmin.companies.reject');
     });
 });
+
+
