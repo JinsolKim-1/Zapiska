@@ -40,8 +40,13 @@ class EmployeeController extends Controller
         return view('users.inventory', compact('categories', 'inventory'));
     }
 
-    public function requests() {
-        return view('users.employee-requests');
+    public function myRequests()
+    {
+        // You can fetch requests for this employee if needed:
+        // $requests = auth()->user()->requests; 
+
+        // Return the blade view
+        return view('users.employee-requests'); 
     }
 
     public function receipts()

@@ -69,8 +69,8 @@
                                     <td>{{ $asset->category->category_name ?? 'N/A' }}</td>
                                     <td>{{ $asset->asset_description }}</td>
                                     <td>{{ $asset->purchase_date ? \Carbon\Carbon::parse($asset->purchase_date)->format('Y-m-d') : 'N/A' }}</td>
-                                    <td>₱{{ number_format($asset->purchase_cost ?? 0, 2) }}</td>
-                                    <td>{{ ucfirst($asset->asset_status) }}</td>
+                                    <td>$ {{ number_format($asset->purchase_cost ?? 0, 2) }}</td>
+                                    <td>{{ ucfirst(str_replace('_', ' ', $asset->asset_status)) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

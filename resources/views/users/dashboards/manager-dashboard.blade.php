@@ -26,7 +26,7 @@
       <section class="dashboard-grid">
         <!-- Row 1 -->
         <div class="card blue"><h3>Pending Requests</h3><p>36</p></div>
-        <div class="card green"><h3>Approved</h3><p>₱2,650</p></div>
+        <div class="card green"><h3>Approved</h3><p>50</p></div>
         <div class="card cyan"><h3>Funds Received</h3><p>₱880</p></div>
         <div class="card yellow"><h3>Paid Invoices</h3><p>₱1,900</p></div>
 

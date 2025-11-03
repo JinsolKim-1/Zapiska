@@ -111,17 +111,21 @@ class ManagerController extends Controller
             'categories', 'assets', 'categoryChartData', 'costRanges'
         ));
     }
+    // ... other methods like dashboard(), assets(), etc.
 
     public function storeSpecialRequest(Request $request)
     {
         $request->validate([
             'special_asset' => 'required|string|max:255',
             'justification' => 'required|string',
-            'sector_id'    => 'required|exists:sectors,sector_id',
-            'company_id'   => 'required|exists:companies,company_id',
+            'sector_id'     => 'required|exists:sectors,sector_id',
+            'company_id'    => 'required|exists:companies,company_id',
         ]);
 
-        SpecialRequest::create([
+        $user = Auth::user();
+
+        // Store in special_request table
+        $specialRequest = \App\Models\SpecialRequest::create([
             'special_asset' => $request->special_asset,
             'justification' => $request->justification,
             'sector_id'     => $request->sector_id,
@@ -129,7 +133,33 @@ class ManagerController extends Controller
             'admin_approve' => 'pending',
         ]);
 
-        return redirect()->back()->with('success', 'Special request sent to admin for approval.');
-    }
+        // Create corresponding asset_request row
+        $assetRequest = \App\Models\AssetRequest::create([
+            'company_id'       => $request->company_id,
+            'sector_id'        => $request->sector_id,
+            'user_id'          => $user->id,
+            'asset_name'       => $request->special_asset,
+            'quantity'         => 1,
+            'purpose'          => $request->justification,
+            'request_type'     => 'special',
+            'manager_approval' => 'pending',
+            'admin_approval'   => 'pending',
+            'final_status'     => 'pending',
+        ]);
 
+        // Optionally generate receipt
+        \App\Models\Receipt::create([
+            'company_id'    => $request->company_id,
+            'sector_id'     => $request->sector_id,
+            'asset_name'    => $request->special_asset,
+            'user_id'       => $user->id,
+            'request_type'  => 'asset_request',
+            'status'        => 'pending',
+            'created_at'    => now(),
+        ]);
+
+        return redirect()->route('manager.requests')
+            ->with('success', 'Special asset request submitted successfully. Admin will review it.');
+    }
 }
+

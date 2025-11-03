@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Superadmin extends Authenticatable
 {
     use HasFactory, Notifiable;
-
+    protected $guard = 'superadmin';
     protected $table = 'superadmins';
     protected $primaryKey = 'super_id';
     public $timestamps = false;

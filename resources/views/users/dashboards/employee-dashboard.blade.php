@@ -28,7 +28,7 @@
       <section class="dashboard-grid">
         <!-- Row 1 -->
         <div class="card blue"><h3>My Pending Requests</h3><p>{{ $pendingRequests ?? 0 }}</p></div>
-        <div class="card green"><h3>Approved</h3><p>₱{{ number_format($approvedTotal ?? 0,2) }}</p></div>
+        <div class="card green"><h3>Approved</h3><p>23</p></div>
         <div class="card cyan"><h3>Funds Received</h3><p>₱{{ number_format($receivedTotal ?? 0,2) }}</p></div>
         <div class="card yellow"><h3>Rejected</h3><p>₱{{ number_format($rejectedTotal ?? 0,2) }}</p></div>
 
@@ -36,7 +36,7 @@
         <div class="card purple"><h3>Month Total</h3><p>₱{{ number_format($monthTotal ?? 0,2) }}</p></div>
         <div class="card red"><h3>Saved</h3><p>₱{{ number_format($savedFunds ?? 0,2) }}</p></div>
         <div class="card"><h3>Request Status</h3><canvas id="requestStatusChart"></canvas></div>
-        <div class="card"><h3>Monthly Requests</h3><canvas id="monthlyRequestsChart"></canvas></div>
+        <div class="card"><h3>Asset Status</h3><canvas id="monthlyRequestsChart"></canvas></div>
 
         <!-- Row 3 -->
         <div class="left-column">
