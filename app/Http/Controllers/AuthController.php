@@ -102,11 +102,14 @@ class AuthController extends Controller
             'email' => 'required|email|max:255|unique:users,email',
             'password' => [
                 'required', 'string', 'min:8',
-                'regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]+$/',
+                'regex:/[A-Z]/', 'regex:/[a-z]/',
+                'regex:/[0-9]/', 'regex:/[@$!%*#?&^]/',
                 'confirmed'
             ],
         ], [
-            'password.regex' => 'Password must contain at least one letter, one number, and one special character.'
+            'password.min' => 'Password must be at least 8 characters long.',
+            'password.regex' => 'Password must meet the criteria below',
+            'password.confirmed' => 'Passwords do not match.'
         ]);
 
         if ($validator->fails()) {
@@ -246,7 +249,7 @@ class AuthController extends Controller
         $request->profile->storeAs('profiles', $filename, 'private');
         $user->profile = $filename;
 
-        $user->update([
+        $user->Auth::update([
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'contact' => $request->contact,
@@ -291,7 +294,7 @@ class AuthController extends Controller
     public function deleteTempUser() {
         $user = Auth::user();
         if ($user && !$user->profile_complete) {
-            $user->delete();
+            $user->Auth::delete();
             Auth::logout();
         }
         return response()->json(['success' => true]);

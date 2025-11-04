@@ -115,7 +115,7 @@ class CompanyController extends Controller
         $user = Auth::user();
         $user->company_id = $invite->company_id;
         $user->role_id = $invite->role_id;
-        $user->save();
+        $user->Auth::save();
 
         $invite->update(['status' => 'approved']);
 

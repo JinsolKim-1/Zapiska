@@ -15,7 +15,7 @@ class Invitation extends Model
     protected $fillable = [
         'company_id',
         'inviter_id',
-        'inviter_email',
+        'invitee_email',
         'role_id',
         'status',
         'approved_by',
@@ -29,7 +29,7 @@ class Invitation extends Model
 
         static::creating(function ($invitation) {
             $invitation->invite_token = Str::uuid(); // unique token
-            $invitation->expires_at = now()->addDays(7); // expires after 7 days
+            $invitation->expires_at = now()->addDays(3); // expires after 3 days
         });
     }
 
