@@ -65,6 +65,14 @@
                     <small class="strength-text"></small>
                 </div>
 
+                <ul class="password-checklist">
+                    <li id="length" class="invalid">At least 8 characters</li>
+                    <li id="upper" class="invalid">At least one uppercase letter</li>
+                    <li id="lower" class="invalid">At least one lowercase letter</li>
+                    <li id="number" class="invalid">At least one number</li>
+                    <li id="special" class="invalid">At least one special character</li>
+                </ul>
+
                 <!-- Confirm Password -->
                 <div class="input-box">
                     <label for="password_confirmation">Confirm Password</label>
@@ -73,6 +81,9 @@
                         <i class='bx bx-lock'></i>
                         <button type="button" class="toggle-password"><i class='bx bx-show'></i></button>
                     </div>
+                        @error('password_confirmation')
+                            <small class="error-text">{{ $message }}</small>
+                        @enderror
                 </div>
 
                 <button type="submit" class="btn">Sign Up</button>

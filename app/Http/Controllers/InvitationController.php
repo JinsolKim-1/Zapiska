@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Log;
 use App\Models\Invitation;
 use App\Models\Role;
@@ -8,9 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use App\Mail\InviteEmail;
-
 
 class InvitationController extends Controller
 {
@@ -18,6 +17,7 @@ class InvitationController extends Controller
     {
         $companyId = Auth::user()->company_id;
         $roles = Role::where('company_id', $companyId)->get();
+
         return view('users.invite', compact('roles'));
     }
 
@@ -31,12 +31,13 @@ class InvitationController extends Controller
 
         $email = $request->email;
 
-        // Check if email already exists
+        // Check if email already exists in users table
         if (User::where('email', $email)->exists()) {
             return redirect()->back()->with('error', "The email {$email} is already in use.");
         }
 
-        $companyId = Auth::user()->company_id;
+        $company = Auth::user()->company;
+        $companyId = $company->company_id;
         $inviterId = Auth::id();
 
         // Create or reuse existing role
@@ -50,15 +51,15 @@ class InvitationController extends Controller
         $invitation = Invitation::create([
             'company_id' => $companyId,
             'inviter_id' => $inviterId,
-            'inviter_email' => $email,
+            'invitee_email' => $email,
             'role_id' => $role->role_id,
             'status' => 'pending',
         ]);
 
-        Log::info('Sending invite to ' . $email);
-
         // Send invitation email
         Mail::to($email)->send(new InviteEmail($invitation));
+
+        Log::info("Invitation sent to {$email} by user ID {$inviterId} from company {$company->company_name}");
 
         return redirect()->back()->with('success', 'Invitation sent successfully to ' . $email);
     }
@@ -71,20 +72,25 @@ class InvitationController extends Controller
             return redirect()->route('register')->with('error', 'Invitation expired, please register manually.');
         }
 
-        // If already has account
-        $user = User::where('email', $invite->inviter_email)->first();
+        // If user already has an account
+        $user = User::where('email', $invite->invitee_email)->first();
         if ($user) {
-            // attach role and company
+            // Attach role and company
             $user->update([
                 'company_id' => $invite->company_id,
                 'role_id' => $invite->role_id,
             ]);
+
             $invite->update(['status' => 'approved']);
-            return redirect()->route('users.dashboard')->with('success', 'Welcome back! Invitation accepted.');
+
+            return redirect()->route('users.dashboard')
+                ->with('success', 'Welcome back! Invitation accepted.');
         }
 
         // If no account → redirect to register, store token in session
         session(['invite_token' => $token]);
-        return redirect()->route('register')->with('info', 'Please register to accept the invitation.');
+
+        return redirect()->route('register')
+            ->with('info', 'Please register to accept the invitation.');
     }
 }
